@@ -27,8 +27,9 @@ public class DroneController {
         return ResponseEntity.ok().body(droneService.findAll());
     }
 
-    @GetMapping("/getByCode/{code}")
-    public ResponseEntity deleteDrone() {
+    @GetMapping("/delete/{id}")
+    public ResponseEntity deleteDrone(@PathVariable("id")String id) {
+        droneService.delete(id);
         return ResponseEntity.ok().body(new ServerResponseDto(ResponseCase.SUCCESS));
     }
 

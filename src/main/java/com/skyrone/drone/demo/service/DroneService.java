@@ -31,4 +31,8 @@ public class DroneService {
     public Drone getByCode(String code) {
         return droneRepository.findByCode(code);
     }
+
+    public void delete(String id) {
+        droneRepository.deleteById(id);
+    }
 }
