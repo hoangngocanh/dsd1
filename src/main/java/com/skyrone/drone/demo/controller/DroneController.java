@@ -19,6 +19,7 @@ import java.util.concurrent.ThreadLocalRandom;
 @RestController
 @CrossOrigin(origins = "*", allowedHeaders = "*")
 @RequestMapping("/drone")
+@ApiOperation(value = "Thêm sửa xóa drone. Lấy danh sách tình trạng của drone")
 public class DroneController {
     @Autowired
     DroneService droneService;
@@ -31,13 +32,13 @@ public class DroneController {
         return ResponseEntity.ok().body(droneService.getByCode(code));
     }
 
-    @ApiOperation(value = "Lấy danh sách drone đang bay trong khoảng thời gian." +
-            " timeStart <= t <= timeEnd" +
+    @ApiOperation(value = "Ngày giờ có dạng \"yyyy-MM-dd HH:mm:ss\" vd: 2020-11-30 11: 11:11 " +
+            ">> Lấy danh sách drone đang bay trong khoảng thời gian. timeStart <= t <= timeEnd" +
             " *** if timeStart == null && timeEnd == null lọc tất cả danh sách dron hoạt động" +
             "*** if 1 trong 2 cái == null lọc sau ngày timeStart hoặc trước ngày timeEnd ", response = List.class)
     @GetMapping("/getAllDroneActive")
-    public ResponseEntity getAllDroneActive(@RequestParam(value = "timeStart", required = false) @DateTimeFormat(pattern = "yyyy-MM-dd")Date timeStart,
-                                            @RequestParam(value = "timeEnd", required = false) @DateTimeFormat(pattern = "yyyy-MM-dd")Date timeEnd) {
+    public ResponseEntity getAllDroneActive(@RequestParam(value = "timeStart", required = false) @DateTimeFormat(pattern = "yyyy-MM-dd HH:mm:ss")Date timeStart,
+                                            @RequestParam(value = "timeEnd", required = false) @DateTimeFormat(pattern = "yyyy-MM-dd HH:mm:ss")Date timeEnd) {
         return ResponseEntity.ok().body(droneService.getAllDroneActive(timeStart, timeEnd));
     }
 

@@ -6,6 +6,7 @@ import com.skyrone.drone.demo.dto.ServerResponseDto;
 import com.skyrone.drone.demo.model.FlightPath;
 import com.skyrone.drone.demo.service.FlightPathService;
 import com.skyrone.drone.demo.utils.DateUtils;
+import io.swagger.annotations.ApiOperation;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.format.annotation.DateTimeFormat;
 import org.springframework.http.ResponseEntity;
@@ -35,6 +36,7 @@ public class FlightPathController {
     }
 
     @GetMapping("getAllPathOfDrone")
+    @ApiOperation(value = "Ngày giờ có dạng \"yyyy-MM-dd HH:mm:ss\" vd: 2020-11-30 11: 11:11 ")
     public ResponseEntity getAllPathOfDrone(@RequestParam("idDrone") String idDrone,
                                             @RequestParam(value = "timeStart", required = false) @DateTimeFormat(pattern = "yyyy-MM-dd") Date timeStart,
                                             @RequestParam(value = "timeEnd", required = false) @DateTimeFormat(pattern = "yyyy-MM-dd")Date timeEnd) {

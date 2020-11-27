@@ -18,6 +18,9 @@ public class FlightPoint {
     private String location;
     private String idDrone;
     private String idFlightPath;
-    private String timeStop;
+    private Float timeStop;
     private Date timeCome;
+
+    public FlightPoint() {
+    }
 }

@@ -15,7 +15,7 @@ import org.springframework.web.bind.annotation.*;
 public class FlightPointController {
     @Autowired
     FlightPointService flightPointService;
-    @GetMapping("save")
+    @PostMapping("save")
     ResponseEntity<ServerResponseDto> saveFlightPoint(@RequestBody FlightPoint flightPoint) {
         flightPointService.save(flightPoint);
         return ResponseEntity.ok().body(new ServerResponseDto(ResponseCase.SUCCESS));
