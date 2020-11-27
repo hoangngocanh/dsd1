@@ -24,7 +24,6 @@ public class Drone {
     private float maxFlightTime; //phut'
     private float maxFlightHeight;    //m
     private float rangeBattery;
-
     public Drone() {
     }
 

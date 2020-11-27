@@ -4,10 +4,16 @@ import com.skyrone.drone.demo.dto.ResponseCase;
 import com.skyrone.drone.demo.dto.ServerResponseDto;
 import com.skyrone.drone.demo.model.Drone;
 import com.skyrone.drone.demo.service.DroneService;
+import com.skyrone.drone.demo.service.FlightPathService;
+import io.swagger.annotations.ApiOperation;
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.format.annotation.DateTimeFormat;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
+import springfox.documentation.annotations.ApiIgnore;
 
+import java.util.Date;
+import java.util.List;
 import java.util.concurrent.ThreadLocalRandom;
 
 @RestController
@@ -17,16 +23,31 @@ public class DroneController {
     @Autowired
     DroneService droneService;
 
+    @Autowired
+    FlightPathService flightPathService;
+
     @GetMapping("/getByCode/{code}")
     public ResponseEntity<Drone> getByCode(@PathVariable("code")String code) {
         return ResponseEntity.ok().body(droneService.getByCode(code));
     }
+
+    @ApiOperation(value = "Lấy danh sách drone đang bay trong khoảng thời gian." +
+            " timeStart <= t <= timeEnd" +
+            " *** if timeStart == null && timeEnd == null lọc tất cả danh sách dron hoạt động" +
+            "*** if 1 trong 2 cái == null lọc sau ngày timeStart hoặc trước ngày timeEnd ", response = List.class)
+    @GetMapping("/getAllDroneActive")
+    public ResponseEntity getAllDroneActive(@RequestParam(value = "timeStart", required = false) @DateTimeFormat(pattern = "yyyy-MM-dd")Date timeStart,
+                                            @RequestParam(value = "timeEnd", required = false) @DateTimeFormat(pattern = "yyyy-MM-dd")Date timeEnd) {
+        return ResponseEntity.ok().body(droneService.getAllDroneActive(timeStart, timeEnd));
+    }
+
 
     @GetMapping("/getAll")
     public ResponseEntity getAllDrone() {
         return ResponseEntity.ok().body(droneService.findAll());
     }
 
+    @ApiIgnore
     @GetMapping("/delete/{id}")
     public ResponseEntity deleteDrone(@PathVariable("id")String id) {
         droneService.delete(id);
@@ -39,6 +60,7 @@ public class DroneController {
         return ResponseEntity.ok().body(new ServerResponseDto(ResponseCase.SUCCESS));
     }
 
+    @ApiIgnore
     @GetMapping("/makeRandomData")
     public void makeRandomData() {
         for (int i = 0; i < 5; i++) {
