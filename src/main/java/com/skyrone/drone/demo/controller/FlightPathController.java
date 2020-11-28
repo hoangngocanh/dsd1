@@ -35,12 +35,19 @@ public class FlightPathController {
         return ResponseEntity.ok().body(new ServerResponseDto(ResponseCase.SUCCESS));
     }
 
-    @GetMapping("getAllPathOfDrone")
-    @ApiOperation(value = "Ngày giờ có dạng \"yyyy-MM-dd HH:mm:ss\" vd: 2020-11-30 11: 11:11 ")
+    @GetMapping("/getAllPathOfDrone")
+    @ApiOperation(value = "Ngày giờ có dạng \"yyyy-MM-dd HH:mm:ss\" vd: 2020-11-30 11: 11:11 ____ Lấy tất cả đường bay của 1 con drone theo ngày giờ")
     public ResponseEntity getAllPathOfDrone(@RequestParam("idDrone") String idDrone,
                                             @RequestParam(value = "timeStart", required = false) @DateTimeFormat(pattern = "yyyy-MM-dd") Date timeStart,
                                             @RequestParam(value = "timeEnd", required = false) @DateTimeFormat(pattern = "yyyy-MM-dd")Date timeEnd) {
         return ResponseEntity.ok().body(flightPathService.getAllPathOfDrone(idDrone, timeStart, timeEnd));
+    }
+
+    @GetMapping("/getAllPath")
+    @ApiOperation(value = "Ngày giờ có dạng \"yyyy-MM-dd HH:mm:ss\" vd: 2020-11-30 11: 11:11 __ Lấy tất cả danh sách đường bay theo ngày giờ")
+    public ResponseEntity getAllPath(@RequestParam(value = "timeStart", required = false) @DateTimeFormat(pattern = "yyyy-MM-dd") Date timeStart,
+                                     @RequestParam(value = "timeEnd", required = false) @DateTimeFormat(pattern = "yyyy-MM-dd")Date timeEnd) {
+        return ResponseEntity.ok().body(flightPathService.getAllFLightPath(timeStart, timeEnd));
     }
 
 

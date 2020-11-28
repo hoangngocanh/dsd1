@@ -42,6 +42,14 @@ public class DroneController {
         return ResponseEntity.ok().body(droneService.getAllDroneActive(timeStart, timeEnd));
     }
 
+    @ApiOperation(value = "Ngày giờ có dạng \"yyyy-MM-dd HH:mm:ss\" vd: 2020-11-30 11: 11:11 " +
+            "Lấy danh sách drone có sẵn nhưng chưa hoạt động đang ở trạng thái chờ trong kho", response = List.class)
+    @GetMapping("/getAllDroneAvailable")
+    public ResponseEntity getAllDroneAvailable(@RequestParam(value = "timeStart", required = false) @DateTimeFormat(pattern = "yyyy-MM-dd HH:mm:ss")Date timeStart,
+                                            @RequestParam(value = "timeEnd", required = false) @DateTimeFormat(pattern = "yyyy-MM-dd HH:mm:ss")Date timeEnd) {
+        return ResponseEntity.ok().body(droneService.getAllDroneAvailable(timeStart, timeEnd));
+    }
+
 
     @GetMapping("/getAll")
     public ResponseEntity getAllDrone() {
@@ -72,5 +80,17 @@ public class DroneController {
 
             droneService.save(drone);
         }
+    }
+
+    @ApiOperation("Chuyển trạng thái drone sang bảo trì")
+    @GetMapping("/setMaintenance/{id}")
+    public ResponseEntity<ServerResponseDto> setMaintenance(@PathVariable("id") String id) {
+        return ResponseEntity.ok().body(droneService.setMaintenance(id));
+    }
+
+    @ApiOperation("Lấy danh sách drone đang bảo trì")
+    @GetMapping("/getAllDroneMaintenance")
+    public ResponseEntity getAllDroneMaintenance() {
+        return ResponseEntity.ok().body(droneService.getAllDroneMaintenance());
     }
 }

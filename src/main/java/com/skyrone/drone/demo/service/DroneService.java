@@ -1,9 +1,10 @@
 package com.skyrone.drone.demo.service;
 
+import com.skyrone.drone.demo.dto.ResponseCase;
+import com.skyrone.drone.demo.dto.ServerResponseDto;
 import com.skyrone.drone.demo.model.Drone;
 import com.skyrone.drone.demo.model.FlightPath;
 import com.skyrone.drone.demo.repository.DroneRepository;
-import com.skyrone.drone.demo.repository.FlightPathRepository;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 
@@ -63,5 +64,31 @@ public class DroneService {
             }
         }
         return drones;
+    }
+
+    public List<Drone> getAllDroneAvailable(Date timeStart, Date timeEnd){
+        List<FlightPath> listFlightPath = flightPathService.getFLightPath(timeStart, timeEnd);
+        if (listFlightPath == null) {
+            return null;
+        }
+        List<String> listIdDrone = new ArrayList<>();
+        for (FlightPath flightPath : listFlightPath) {
+            listIdDrone.add(flightPath.getIdDrone());
+        }
+        List<Drone> drones = droneRepository.findByIdNotInAndIsUsed(listIdDrone, true);
+        return drones;
+    }
+
+    public ServerResponseDto setMaintenance(String id) {
+        Optional<Drone> drone = droneRepository.findById(id);
+        if (drone.isPresent()) {
+            drone.get().setUsed(false);
+            return new ServerResponseDto(ResponseCase.SUCCESS);
+        }
+        return new ServerResponseDto(ResponseCase.NOT_FOUND_DRONE);
+    }
+
+    public List<Drone> getAllDroneMaintenance() {
+        return droneRepository.findByIsUsed(false);
     }
 }

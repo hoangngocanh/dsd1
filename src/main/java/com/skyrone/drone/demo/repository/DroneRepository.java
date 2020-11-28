@@ -5,6 +5,7 @@ import org.springframework.data.mongodb.repository.MongoRepository;
 import org.springframework.data.mongodb.repository.Query;
 import org.springframework.stereotype.Repository;
 
+import java.util.Date;
 import java.util.List;
 import java.util.Optional;
 
@@ -22,4 +23,7 @@ public interface DroneRepository extends MongoRepository<Drone, String> {
 
     void deleteById(String id);
 
+    List<Drone> findByIsUsed(boolean isUsed);
+
+    List<Drone> findByIdNotInAndIsUsed(List<String> id, boolean isUsed);
 }

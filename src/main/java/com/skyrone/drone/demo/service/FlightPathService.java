@@ -45,6 +45,19 @@ public class FlightPathService {
         }
     }
 
+    public List<FlightPathDto> getAllFLightPath(Date timeStart, Date timeEnd) {
+        List<FlightPath> flightPaths = getFLightPath(timeStart, timeEnd);
+        if (flightPaths == null) {
+            return null;
+        }
+        List<FlightPathDto> flightPathDtos = new ArrayList<>();
+        for (FlightPath flightPath : flightPaths) {
+            List<FlightPoint> flightPoints = flightPointService.getByIdPath(flightPath.getId());
+            FlightPathDto flightPathDto = new FlightPathDto(flightPath, flightPoints);
+            flightPathDtos.add(flightPathDto);
+        }
+        return flightPathDtos;
+    }
 
 
     public List<FlightPathDto> getAllPathOfDrone(String idDrone, Date timeStart, Date timeEnd) {
