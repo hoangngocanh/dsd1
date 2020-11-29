@@ -32,6 +32,11 @@ public class DroneController {
         return ResponseEntity.ok().body(droneService.getByCode(code));
     }
 
+    @GetMapping("/getById/{id}")
+    public ResponseEntity<Drone> getById(@PathVariable("id")String id) {
+        return ResponseEntity.ok().body(droneService.getById(id).get());
+    }
+
     @ApiOperation(value = "Ngày giờ có dạng \"yyyy-MM-dd HH:mm:ss\" vd: 2020-11-30 11: 11:11 " +
             ">> Lấy danh sách drone đang bay trong khoảng thời gian. timeStart <= t <= timeEnd" +
             " *** if timeStart == null && timeEnd == null lọc tất cả danh sách dron hoạt động" +
@@ -92,5 +97,10 @@ public class DroneController {
     @GetMapping("/getAllDroneMaintenance")
     public ResponseEntity getAllDroneMaintenance() {
         return ResponseEntity.ok().body(droneService.getAllDroneMaintenance());
+    }
+
+    @GetMapping("/getParameterFlightRealTime/{id}")
+    public ResponseEntity<ServerResponseDto> getParameterFlightRealTime(@PathVariable("id") String id) {
+        return ResponseEntity.ok().body(droneService.getParameterFlightRealTime(id));
     }
 }

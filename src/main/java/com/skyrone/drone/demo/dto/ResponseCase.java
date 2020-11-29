@@ -10,5 +10,7 @@ public interface ResponseCase {
     ResponseStatus PASSWORD_NOT_RIGHT = new ResponseStatus(1007, "Pass word is in correct");
     ResponseStatus EMAIL_IS_USED = new ResponseStatus(1, "Email is used");
     ResponseStatus ERROR = new ResponseStatus(4, "Error");
-    ResponseStatus NOT_FOUND_DRONE = new ResponseStatus(4000, "not found drone");;
+    ResponseStatus NOT_FOUND_DRONE = new ResponseStatus(4000, "not found drone");
+    ResponseStatus DRONE_MAINTENANCE = new ResponseStatus(4001, "drone maintenance");
+    ResponseStatus DRONE_NOT_FLIGHT = new ResponseStatus(4002, "drone not flight");;
 }

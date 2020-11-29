@@ -50,5 +50,9 @@ public class FlightPathController {
         return ResponseEntity.ok().body(flightPathService.getAllFLightPath(timeStart, timeEnd));
     }
 
-
+    @GetMapping("/getPathOfDroneRealTime/{id}")
+    @ApiOperation(value = "Lấy đường bay của drone tại thời điểm request")
+    public ResponseEntity getPathOfDroneRealTime(@PathVariable String id) {
+        return ResponseEntity.ok().body(flightPathService.getFlightPathRealTime(id));
+    }
 }

@@ -94,4 +94,12 @@ public class FlightPathService {
     public void saveFlightPath(FlightPath flightPath) {
         flightPathRepository.save(flightPath);
     }
+
+    public FlightPath getFlightPathRealTime(String idDrone) {
+        List<FlightPath> flightPathList =  flightPathRepository.getByIdDroneRealTime(new Date(), idDrone);
+        if (flightPathList == null) {
+            return null;
+        }
+        return flightPathList.get(0);
+    }
 }

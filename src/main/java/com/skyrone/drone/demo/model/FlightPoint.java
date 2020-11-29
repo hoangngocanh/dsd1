@@ -15,12 +15,14 @@ import java.util.Date;
 public class FlightPoint {
     @Id
     private String id;
-    private String location;
+    private Float locationLat;
+    private Float locationLng;
     private String idDrone;
     private String idFlightPath;
     private Float timeStop;
     private Date timeCome;
-
+    private String note;
+    private String idSupervisedObject;
     public FlightPoint() {
     }
 }

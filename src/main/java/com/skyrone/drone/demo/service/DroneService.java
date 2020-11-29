@@ -1,17 +1,17 @@
 package com.skyrone.drone.demo.service;
 
+import com.skyrone.drone.demo.dto.ParamFlightResponse;
 import com.skyrone.drone.demo.dto.ResponseCase;
 import com.skyrone.drone.demo.dto.ServerResponseDto;
 import com.skyrone.drone.demo.model.Drone;
 import com.skyrone.drone.demo.model.FlightPath;
+import com.skyrone.drone.demo.model.FlightPoint;
 import com.skyrone.drone.demo.repository.DroneRepository;
+import com.skyrone.drone.demo.repository.FlightPointRepository;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 
-import java.util.ArrayList;
-import java.util.Date;
-import java.util.List;
-import java.util.Optional;
+import java.util.*;
 
 @Service
 public class DroneService {
@@ -20,6 +20,9 @@ public class DroneService {
 
     @Autowired
     FlightPathService flightPathService;
+
+    @Autowired
+    FlightPointRepository flightPointRepository;
 
     public List<Drone> findByName(String name) {
         return droneRepository.findByName(name);
@@ -43,6 +46,7 @@ public class DroneService {
     public Optional<Drone> getById(String id) {
         return droneRepository.findById(id);
     }
+
     public void delete(String id) {
         droneRepository.deleteById(id);
     }
@@ -90,5 +94,30 @@ public class DroneService {
 
     public List<Drone> getAllDroneMaintenance() {
         return droneRepository.findByIsUsed(false);
+    }
+
+    public ServerResponseDto getParameterFlightRealTime(String idDrone) {
+        Optional<Drone> drone = droneRepository.findById(idDrone);
+        if (!drone.isPresent()) return new ServerResponseDto(ResponseCase.NOT_FOUND_DRONE);
+        if (!drone.get().isUsed()) return new ServerResponseDto(ResponseCase.DRONE_MAINTENANCE);
+        FlightPath flightPath = flightPathService.getFlightPathRealTime(idDrone);
+        if (flightPath == null) {
+            return new ServerResponseDto(ResponseCase.DRONE_NOT_FLIGHT);
+        }
+        float locationLat = new Random().nextFloat();
+        float locationLng = new Random().nextFloat();
+        Date realTime = new Date();
+        float percentBattery = ((float ) (flightPath.getTimeEnd().getTime() - realTime.getTime()))
+                /((float) (flightPath.getTimeEnd().getTime() - flightPath.getTimeStart().getTime())) * 100f;
+        List<FlightPoint> listPoint = flightPointRepository.findByIdFlightPath(flightPath.getId());
+        List<String> listSupervisedObject = new ArrayList<>();
+        if (listPoint != null) {
+            for (FlightPoint flightPoint : listPoint) {
+                listSupervisedObject.add(flightPoint.getIdSupervisedObject());
+            }
+        }
+        ParamFlightResponse paramFlightResponse = new ParamFlightResponse(locationLat, locationLng, idDrone, flightPath.getId(), flightPath.getIdSupervisedArea(),
+                listSupervisedObject, flightPath.getHeightFlight(), new Date(), 30.f, percentBattery);
+        return new ServerResponseDto(ResponseCase.SUCCESS, paramFlightResponse);
     }
 }
