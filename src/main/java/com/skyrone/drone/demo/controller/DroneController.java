@@ -69,9 +69,8 @@ public class DroneController {
     }
 
     @PostMapping("/save")
-    public ResponseEntity<ServerResponseDto> save(@RequestBody Drone drone) {
-        droneService.save(drone);
-        return ResponseEntity.ok().body(new ServerResponseDto(ResponseCase.SUCCESS));
+    public ResponseEntity save(@RequestBody Drone drone) {
+        return ResponseEntity.ok().body(droneService.save(drone));
     }
 
     @ApiIgnore

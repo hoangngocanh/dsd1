@@ -29,8 +29,8 @@ public class FlightPathService {
     @Autowired
     FlightPointService flightPointService;
 
-    public void save(FlightPath flightPath) {
-        flightPathRepository.save(flightPath);
+    public FlightPath save(FlightPath flightPath) {
+        return flightPathRepository.save(flightPath);
     }
 
     public List<FlightPath> getFLightPath(Date timeStart, Date timeEnd) {
@@ -91,9 +91,6 @@ public class FlightPathService {
         return flightPathDtos;
     }
 
-    public void saveFlightPath(FlightPath flightPath) {
-        flightPathRepository.save(flightPath);
-    }
 
     public FlightPath getFlightPathRealTime(String idDrone) {
         List<FlightPath> flightPathList =  flightPathRepository.getByIdDroneRealTime(new Date(), idDrone);

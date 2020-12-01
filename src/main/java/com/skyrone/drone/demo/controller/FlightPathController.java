@@ -30,9 +30,8 @@ public class FlightPathController {
 //    }
 
     @PostMapping("/save")
-    public ResponseEntity<ServerResponseDto> savePath(@RequestBody FlightPath flightPath) {
-        flightPathService.saveFlightPath(flightPath);
-        return ResponseEntity.ok().body(new ServerResponseDto(ResponseCase.SUCCESS));
+    public ResponseEntity savePath(@RequestBody FlightPath flightPath) {
+        return ResponseEntity.ok().body(flightPathService.save(flightPath));
     }
 
     @GetMapping("/getAllPathOfDrone")

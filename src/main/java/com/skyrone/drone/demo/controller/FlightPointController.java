@@ -22,4 +22,9 @@ public class FlightPointController {
         return ResponseEntity.ok().body(new ServerResponseDto(ResponseCase.SUCCESS));
     }
 
+    @GetMapping("getPointOfPath/{id}")
+    ResponseEntity getPointOfPath(@PathVariable("id")String id) {
+        return ResponseEntity.ok().body(flightPointService.getByIdPath(id));
+    }
+
 }
