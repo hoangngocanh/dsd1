@@ -18,7 +18,7 @@ public interface FlightPathRepository extends MongoRepository<FlightPath, String
     List<FlightPath> getAllPathActiveTo(Date timeEnd);
 
     @Query("{$and : [{ 'timeStart': {$gte : ?0}}, {'timeEnd' : {$lte : ?1}}, {'idDrone' : ?2}]}")
-    List<FlightPath> getPathByIdDrone(Date timeStart, Date timeEnd, String idDrone);
+    List<FlightPath> getPathByIdDroneDate(Date timeStart, Date timeEnd, String idDrone);
 
     @Query("{$and : [{ 'timeStart': {$gte : ?0}}, {'idDrone' : ?1}]}")
     List<FlightPath> getPathByIdDroneFrom(Date timeStart, String idDrone);
@@ -28,4 +28,7 @@ public interface FlightPathRepository extends MongoRepository<FlightPath, String
 
     @Query("{$and : [{'timeEnd' : {$gte : ?0}}, {'timeStart' : {$lte : ?0}}, {'idDrone' : ?1}]}")
     List<FlightPath> getByIdDroneRealTime(Date realTime, String idDrone);
+
+    @Query("{ 'idDrone': ?0}")
+    List<FlightPath> findByIdDrone(String id);
 }

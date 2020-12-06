@@ -70,13 +70,13 @@ public class FlightPathService {
         }
         List<FlightPath> flightPaths;
         if (timeStart != null && timeEnd != null) {
-            flightPaths  = flightPathRepository.getPathByIdDrone(timeStart, timeEnd, idDrone);
+            flightPaths  = flightPathRepository.getPathByIdDroneDate(timeStart, timeEnd, idDrone);
         } else if (timeStart != null) {
             flightPaths = flightPathRepository.getPathByIdDroneFrom(timeStart, idDrone);
         } else if (timeEnd != null) {
             flightPaths = flightPathRepository.getPathByIdDroneTo(timeEnd, idDrone);
         } else {
-            flightPaths = flightPathRepository.findAll();
+            flightPaths = flightPathRepository.findByIdDrone(idDrone);
         }
 
         if (flightPaths == null) {

@@ -13,7 +13,7 @@ public class Drone {
     private String id;
     private String code;
     private double idLog;
-    private boolean isUsed;
+    private boolean isUsed = true;
     private int task;
     private String name;
     private String brand;

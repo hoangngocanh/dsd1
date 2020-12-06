@@ -70,6 +70,7 @@ public class DroneController {
 
     @PostMapping("/save")
     public ResponseEntity save(@RequestBody Drone drone) {
+        drone.setUsed(true);
         return ResponseEntity.ok().body(droneService.save(drone));
     }
 
@@ -102,4 +103,6 @@ public class DroneController {
     public ResponseEntity<ServerResponseDto> getParameterFlightRealTime(@PathVariable("id") String id) {
         return ResponseEntity.ok().body(droneService.getParameterFlightRealTime(id));
     }
+
+
 }
