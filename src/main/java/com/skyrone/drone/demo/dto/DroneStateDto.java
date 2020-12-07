@@ -15,11 +15,17 @@ public class DroneStateDto {
     public DroneStateDto() {
     }
 
-    public void setMessage() {
+    public DroneStateDto(String id, String name, boolean isUsed) {
+        this.id = id;
+        this.name = name;
+        this.isUsed = isUsed;
+    }
+
+    public void setMessage(int state) {
         if (state == 0) {
-            this.message = "Đang Bay";
-        } else if (state == 1) {
             this.message = "Đang Rảnh";
+        } else if (state == 1) {
+            this.message = "Đang Bay";
         } else if (state == 2) {
             this.message = "Đang Sạc";
         } else if (state == 3) {

@@ -30,7 +30,8 @@ public class FlightPathController {
 //    }
 
     @PostMapping("/save")
-    public ResponseEntity savePath(@RequestBody FlightPath flightPath) {
+    public ResponseEntity<ServerResponseDto> savePath(@RequestBody FlightPath flightPath) {
+
         return ResponseEntity.ok().body(flightPathService.save(flightPath));
     }
 
@@ -53,5 +54,18 @@ public class FlightPathController {
     @ApiOperation(value = "Lấy đường bay của drone tại thời điểm request")
     public ResponseEntity getPathOfDroneRealTime(@PathVariable String id) {
         return ResponseEntity.ok().body(flightPathService.getFlightPathRealTime(id));
+    }
+
+    @GetMapping("/delete/{id}")
+    @ApiOperation(value = "Xoá hành trình bay")
+    public ResponseEntity delete(@PathVariable String id) {
+        flightPathService.delete(id);
+        return ResponseEntity.ok().body(new ServerResponseDto(ResponseCase.SUCCESS));
+    }
+
+    @GetMapping("/getAllBySupervisedArea/{id}")
+    @ApiOperation(value = "Lấy tất cả hành trình bay từ id zone miên giám sát")
+    public ResponseEntity getAllBySupervisedArea(@PathVariable String id) {
+        return ResponseEntity.ok().body(flightPathService.getAllBySupervisedArea(id));
     }
 }

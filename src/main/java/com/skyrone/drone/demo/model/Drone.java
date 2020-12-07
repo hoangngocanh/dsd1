@@ -39,5 +39,6 @@ public class Drone {
         this.maxFlightTime = maxFlightTime;
         this.maxFlightHeight = maxFlightHeight;
         this.rangeBattery = rangeBattery;
+        this.isUsed = true;
     }
 }

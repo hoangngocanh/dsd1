@@ -21,4 +21,12 @@ public class FlightPointService {
             flightPointRepository.save(flightPoint);
         }
     }
+
+    public void delete(String id) {
+        flightPointRepository.deleteById(id);
+    }
+
+    public void deleteByPath(String id) {
+        flightPointRepository.deleteByIdFlightPath(id);
+    }
 }

@@ -14,13 +14,24 @@ public class DroneMaintenance {
     @Id
     private String id;
     private String name;
-    private Date startTime;
-    private Date endTime;
+    private Date timeStart;
+    private Date timeEnd;
     private boolean isMaintenance;
 
-    public DroneMaintenance(String name, Date startTime, Date endTime) {
+    public DroneMaintenance(String name, Date timeStart, Date timeEnd) {
         this.name = name;
-        this.startTime = startTime;
-        this.endTime = endTime;
+        this.timeStart = timeStart;
+        this.timeEnd = timeEnd;
+    }
+
+    public DroneMaintenance(String id, String name, Date timeStart, Date timeEnd, boolean isMaintenance) {
+        this.id = id;
+        this.name = name;
+        this.timeStart = timeStart;
+        this.timeEnd = timeEnd;
+        this.isMaintenance = isMaintenance;
+    }
+
+    public DroneMaintenance() {
     }
 }

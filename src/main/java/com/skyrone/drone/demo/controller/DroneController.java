@@ -7,13 +7,10 @@ import com.skyrone.drone.demo.service.DroneService;
 import com.skyrone.drone.demo.service.FlightPathService;
 import io.swagger.annotations.ApiOperation;
 import org.springframework.beans.factory.annotation.Autowired;
-import org.springframework.format.annotation.DateTimeFormat;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
 import springfox.documentation.annotations.ApiIgnore;
 
-import java.util.Date;
-import java.util.List;
 import java.util.concurrent.ThreadLocalRandom;
 
 @RestController
@@ -37,31 +34,11 @@ public class DroneController {
         return ResponseEntity.ok().body(droneService.getById(id).get());
     }
 
-    @ApiOperation(value = "Ngày giờ có dạng \"yyyy-MM-dd HH:mm:ss\" vd: 2020-11-30 11: 11:11 " +
-            ">> Lấy danh sách drone đang bay trong khoảng thời gian. timeStart <= t <= timeEnd" +
-            " *** if timeStart == null && timeEnd == null lọc tất cả danh sách dron hoạt động" +
-            "*** if 1 trong 2 cái == null lọc sau ngày timeStart hoặc trước ngày timeEnd ", response = List.class)
-    @GetMapping("/getAllDroneActive")
-    public ResponseEntity getAllDroneActive(@RequestParam(value = "timeStart", required = false) @DateTimeFormat(pattern = "yyyy-MM-dd HH:mm:ss")Date timeStart,
-                                            @RequestParam(value = "timeEnd", required = false) @DateTimeFormat(pattern = "yyyy-MM-dd HH:mm:ss")Date timeEnd) {
-        return ResponseEntity.ok().body(droneService.getAllDroneActive(timeStart, timeEnd));
-    }
-
-    @ApiOperation(value = "Ngày giờ có dạng \"yyyy-MM-dd HH:mm:ss\" vd: 2020-11-30 11: 11:11 " +
-            "Lấy danh sách drone có sẵn nhưng chưa hoạt động đang ở trạng thái chờ trong kho", response = List.class)
-    @GetMapping("/getAllDroneAvailable")
-    public ResponseEntity getAllDroneAvailable(@RequestParam(value = "timeStart", required = false) @DateTimeFormat(pattern = "yyyy-MM-dd HH:mm:ss")Date timeStart,
-                                            @RequestParam(value = "timeEnd", required = false) @DateTimeFormat(pattern = "yyyy-MM-dd HH:mm:ss")Date timeEnd) {
-        return ResponseEntity.ok().body(droneService.getAllDroneAvailable(timeStart, timeEnd));
-    }
-
-
     @GetMapping("/getAll")
     public ResponseEntity getAllDrone() {
         return ResponseEntity.ok().body(droneService.findAll());
     }
 
-    @ApiIgnore
     @GetMapping("/delete/{id}")
     public ResponseEntity deleteDrone(@PathVariable("id")String id) {
         droneService.delete(id);
@@ -74,35 +51,17 @@ public class DroneController {
         return ResponseEntity.ok().body(droneService.save(drone));
     }
 
-    @ApiIgnore
-    @GetMapping("/makeRandomData")
-    public void makeRandomData() {
-        for (int i = 0; i < 5; i++) {
-            int random = ThreadLocalRandom.current().nextInt(1154, 2399);
-            int code = 1000 + i * 21;
-            Drone drone = new Drone("mavic"+code,"Mavic pro 2020"+random, "Mavic", "white", "1x0.95x0.7 m", 16000, 35, 90, 230, 105000);
-//            Drone drone = new Drone(2, "41 24.2028, 2 10.4418", 93.3f, 2300, 15, 3, 100, "phantom max 2020"+random, "phantom", "white", "1.2x0.95x0.62 m", 13000, 30, 70, 220, 95000);
-
-            droneService.save(drone);
-        }
-    }
-
-    @ApiOperation("Chuyển trạng thái drone sang bảo trì")
-    @GetMapping("/setMaintenance/{id}")
-    public ResponseEntity<ServerResponseDto> setMaintenance(@PathVariable("id") String id) {
-        return ResponseEntity.ok().body(droneService.setMaintenance(id));
-    }
-
-    @ApiOperation("Lấy danh sách drone đang bảo trì")
-    @GetMapping("/getAllDroneMaintenance")
-    public ResponseEntity getAllDroneMaintenance() {
-        return ResponseEntity.ok().body(droneService.getAllDroneMaintenance());
-    }
-
-    @GetMapping("/getParameterFlightRealTime/{id}")
-    public ResponseEntity<ServerResponseDto> getParameterFlightRealTime(@PathVariable("id") String id) {
-        return ResponseEntity.ok().body(droneService.getParameterFlightRealTime(id));
-    }
+//    @GetMapping("/makeRandomData")
+//    public void makeRandomData() {
+//        for (int i = 0; i < 5; i++) {
+//            int random = ThreadLocalRandom.current().nextInt(1154, 2399);
+//            int code = 1000 + i * 21;
+//            Drone drone = new Drone("mavic"+code,"Mavic pro 2020"+random, "Mavic", "white", "1x0.95x0.7 m", 16000, 35, 90, 230, 105000);
+////            Drone drone = new Drone(2, "41 24.2028, 2 10.4418", 93.3f, 2300, 15, 3, 100, "phantom max 2020"+random, "phantom", "white", "1.2x0.95x0.62 m", 13000, 30, 70, 220, 95000);
+//
+//            droneService.save(drone);
+//        }
+//    }
 
 
 }

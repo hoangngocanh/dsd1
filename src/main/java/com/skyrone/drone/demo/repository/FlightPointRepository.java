@@ -9,4 +9,5 @@ public interface FlightPointRepository extends MongoRepository<FlightPoint, Stri
 
     List<FlightPoint> findByIdFlightPath(String idPath);
 
+    void deleteByIdFlightPath(String id);
 }

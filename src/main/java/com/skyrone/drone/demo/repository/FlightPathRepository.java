@@ -31,4 +31,6 @@ public interface FlightPathRepository extends MongoRepository<FlightPath, String
 
     @Query("{ 'idDrone': ?0}")
     List<FlightPath> findByIdDrone(String id);
+
+    List<FlightPath> findByIdSupervisedArea(String id);
 }

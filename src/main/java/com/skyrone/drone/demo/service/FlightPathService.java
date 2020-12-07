@@ -1,6 +1,9 @@
 package com.skyrone.drone.demo.service;
 
+import com.skyrone.drone.demo.dto.DroneStateDto;
 import com.skyrone.drone.demo.dto.FlightPathDto;
+import com.skyrone.drone.demo.dto.ResponseCase;
+import com.skyrone.drone.demo.dto.ServerResponseDto;
 import com.skyrone.drone.demo.model.Drone;
 import com.skyrone.drone.demo.model.FlightPath;
 import com.skyrone.drone.demo.model.FlightPoint;
@@ -29,8 +32,22 @@ public class FlightPathService {
     @Autowired
     FlightPointService flightPointService;
 
-    public FlightPath save(FlightPath flightPath) {
-        return flightPathRepository.save(flightPath);
+    @Autowired
+    DroneStateService droneStateService;
+
+
+
+    public ServerResponseDto save(FlightPath flightPath) {
+        Optional<Drone> drone = droneRepository.findById(flightPath.getIdDrone());
+        if (drone.isPresent()) {
+            DroneStateDto droneStateDto = droneStateService.getById(flightPath.getIdDrone());
+            if (droneStateDto.getState() == 0) {
+                flightPathRepository.save(flightPath);
+                return new ServerResponseDto(ResponseCase.SUCCESS);
+            }
+            return new ServerResponseDto(ResponseCase.DRONE_BUSY);
+        }
+        return new ServerResponseDto(ResponseCase.NOT_FOUND_DRONE);
     }
 
     public List<FlightPath> getFLightPath(Date timeStart, Date timeEnd) {
@@ -94,9 +111,18 @@ public class FlightPathService {
 
     public FlightPath getFlightPathRealTime(String idDrone) {
         List<FlightPath> flightPathList =  flightPathRepository.getByIdDroneRealTime(new Date(), idDrone);
-        if (flightPathList == null) {
+        if (flightPathList.size() < 1) {
             return null;
         }
         return flightPathList.get(0);
+    }
+
+    public void delete(String id) {
+        flightPathRepository.deleteById(id);
+        flightPointService.deleteByPath(id);
+    }
+
+    public List<FlightPath> getAllBySupervisedArea(String id) {
+        return flightPathRepository.findByIdSupervisedArea(id);
     }
 }

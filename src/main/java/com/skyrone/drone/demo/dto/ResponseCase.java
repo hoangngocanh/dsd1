@@ -12,5 +12,8 @@ public interface ResponseCase {
     ResponseStatus ERROR = new ResponseStatus(4, "Error");
     ResponseStatus NOT_FOUND_DRONE = new ResponseStatus(4000, "not found drone");
     ResponseStatus DRONE_MAINTENANCE = new ResponseStatus(4001, "drone maintenance");
-    ResponseStatus DRONE_NOT_FLIGHT = new ResponseStatus(4002, "drone not flight");;
+    ResponseStatus DRONE_NOT_FLIGHT = new ResponseStatus(4002, "drone not flight");
+    ResponseStatus DRONE_BUSY = new ResponseStatus(4003, "drone is busy");
+
+    ResponseStatus NOT_FOUND_FLIGHT = new ResponseStatus(4004, "not found flight path please check id flight path");
 }
