@@ -16,4 +16,5 @@ public interface ResponseCase {
     ResponseStatus DRONE_BUSY = new ResponseStatus(4003, "drone is busy");
 
     ResponseStatus NOT_FOUND_FLIGHT = new ResponseStatus(4004, "not found flight path please check id flight path");
+    ResponseStatus DRONE_AVAILABLE = new ResponseStatus(4004, "drone rảnh");
 }

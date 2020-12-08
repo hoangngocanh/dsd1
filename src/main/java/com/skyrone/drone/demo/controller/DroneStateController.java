@@ -21,15 +21,22 @@ public class DroneStateController {
     DroneStateService droneStateService;
 
     @ApiOperation("Lấy danh sách tình trạng drone")
-    @GetMapping("/getAllState")
+    @GetMapping("/getAllStateNow")
     public ResponseEntity getAllState() {
-        return ResponseEntity.ok().body(droneStateService.getAll());
+        return ResponseEntity.ok().body(droneStateService.getAllStateNow());
     }
 
     @ApiOperation("Lấy thông tin tình trạng của 1 drone theo id")
     @GetMapping("/getById/{id}")
     public ResponseEntity<DroneStateDto> getById(@PathVariable String id) {
         return  ResponseEntity.ok().body(droneStateService.getById(id));
+    }
+
+    @ApiOperation("Lấy thông tin lịch hoạt động của 1 drone theo id")
+    @GetMapping("/getScheduleById/{id}")
+    public ResponseEntity<ServerResponseDto> getScheduleById(@PathVariable String id, @RequestParam(value = "timeStart", required = false) @DateTimeFormat(pattern = "yyyy-MM-dd HH:mm:ss") Date timeStart,
+                                                         @RequestParam(value = "timeEnd", required = false) @DateTimeFormat(pattern = "yyyy-MM-dd HH:mm:ss")Date timeEnd) {
+        return  ResponseEntity.ok().body(droneStateService.getScheduleById(timeStart, timeEnd, id));
     }
 
     @ApiOperation(value = "Ngày giờ có dạng \"yyyy-MM-dd HH:mm:ss\" vd: 2020-11-30 11: 11:11 " +
@@ -83,4 +90,7 @@ public class DroneStateController {
                                               @RequestParam(value = "timeEnd", required = false) @DateTimeFormat(pattern = "yyyy-MM-dd HH:mm:ss")Date timeEnd) {
         return ResponseEntity.ok().body(droneStateService.getAllDroneMaintenance(timeStart, timeEnd));
     }
+
+
+
 }

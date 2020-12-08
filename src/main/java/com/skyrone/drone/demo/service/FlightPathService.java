@@ -42,8 +42,7 @@ public class FlightPathService {
         if (drone.isPresent()) {
             DroneStateDto droneStateDto = droneStateService.getById(flightPath.getIdDrone());
             if (droneStateDto.getState() == 0) {
-                flightPathRepository.save(flightPath);
-                return new ServerResponseDto(ResponseCase.SUCCESS);
+                return new ServerResponseDto(ResponseCase.SUCCESS, flightPathRepository.save(flightPath));
             }
             return new ServerResponseDto(ResponseCase.DRONE_BUSY);
         }
@@ -122,7 +121,17 @@ public class FlightPathService {
         flightPointService.deleteByPath(id);
     }
 
-    public List<FlightPath> getAllBySupervisedArea(String id) {
-        return flightPathRepository.findByIdSupervisedArea(id);
+    public List<FlightPathDto> getAllBySupervisedArea(String id) {
+        List<FlightPath> flightPaths =  flightPathRepository.findByIdSupervisedArea(id);
+        if (flightPaths.size() < 1) {
+            return null;
+        }
+        List<FlightPathDto> flightPathDtos = new ArrayList<>();
+        for (FlightPath flightPath : flightPaths) {
+            List<FlightPoint> flightPoints = flightPointService.getByIdPath(flightPath.getId());
+            FlightPathDto flightPathDto = new FlightPathDto(flightPath, flightPoints);
+            flightPathDtos.add(flightPathDto);
+        }
+        return flightPathDtos;
     }
 }

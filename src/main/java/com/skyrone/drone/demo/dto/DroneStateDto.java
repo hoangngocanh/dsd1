@@ -3,20 +3,23 @@ package com.skyrone.drone.demo.dto;
 import lombok.Getter;
 import lombok.Setter;
 
+import java.util.Date;
+
 @Getter
 @Setter
 public class DroneStateDto {
-    private String id;
+    private String idDrone;
     private String name;
     private int state;
     private String message;
     private boolean isUsed;
-
+    private Date timeStart;
+    private Date timeEnd;
     public DroneStateDto() {
     }
 
-    public DroneStateDto(String id, String name, boolean isUsed) {
-        this.id = id;
+    public DroneStateDto(String idDrone, String name, boolean isUsed) {
+        this.idDrone = idDrone;
         this.name = name;
         this.isUsed = isUsed;
     }
