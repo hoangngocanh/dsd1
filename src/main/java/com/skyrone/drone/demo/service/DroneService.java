@@ -1,11 +1,6 @@
 package com.skyrone.drone.demo.service;
 
-import com.skyrone.drone.demo.dto.ParamFlightResponse;
-import com.skyrone.drone.demo.dto.ResponseCase;
-import com.skyrone.drone.demo.dto.ServerResponseDto;
 import com.skyrone.drone.demo.model.Drone;
-import com.skyrone.drone.demo.model.FlightPath;
-import com.skyrone.drone.demo.model.FlightPoint;
 import com.skyrone.drone.demo.repository.DroneRepository;
 import com.skyrone.drone.demo.repository.FlightPointRepository;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -19,7 +14,7 @@ public class DroneService {
     DroneRepository droneRepository;
 
     @Autowired
-    FlightPathService flightPathService;
+    FlightItineraryService flightItineraryService;
 
     @Autowired
     FlightPointRepository flightPointRepository;

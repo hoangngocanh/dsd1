@@ -15,6 +15,9 @@ public class DroneStateDto {
     private boolean isUsed;
     private Date timeStart;
     private Date timeEnd;
+    private int task = 0;
+    private String contentTask = "Chưa được phân công";
+
     public DroneStateDto() {
     }
 
@@ -22,6 +25,20 @@ public class DroneStateDto {
         this.idDrone = idDrone;
         this.name = name;
         this.isUsed = isUsed;
+    }
+
+    public void setContentTask(int task) {
+         if (task == 1) {
+            this.contentTask = "Giám sát cháy rừng";
+        } else if (task == 2) {
+            this.contentTask = "Giám sát đê điều ";
+        } else if (task == 3) {
+            this.contentTask = "Giám sát lưới điẹn";
+         } else if (task == 4) {
+             this.contentTask = "Giám sát cây trồng";
+         } else {
+             this.contentTask = "Chưa được phân công";
+         }
     }
 
     public void setMessage(int state) {

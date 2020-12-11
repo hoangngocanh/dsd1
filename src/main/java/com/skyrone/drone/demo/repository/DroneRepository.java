@@ -26,4 +26,6 @@ public interface DroneRepository extends MongoRepository<Drone, String> {
     List<Drone> findByIsUsed(boolean isUsed);
 
     List<Drone> findByIdNotInAndIsUsed(List<String> id, boolean isUsed);
+
+    List<Drone> findByIdInAndIsUsed(List<String> id, boolean isUsed);
 }

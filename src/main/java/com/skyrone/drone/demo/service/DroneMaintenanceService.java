@@ -5,7 +5,6 @@ import com.skyrone.drone.demo.dto.ResponseCase;
 import com.skyrone.drone.demo.dto.ServerResponseDto;
 import com.skyrone.drone.demo.model.Drone;
 import com.skyrone.drone.demo.model.DroneMaintenance;
-import com.skyrone.drone.demo.model.FlightPath;
 import com.skyrone.drone.demo.repository.MaintenanceRepository;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;

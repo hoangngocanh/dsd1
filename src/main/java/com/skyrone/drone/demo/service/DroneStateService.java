@@ -6,10 +6,10 @@ import com.skyrone.drone.demo.dto.ResponseCase;
 import com.skyrone.drone.demo.dto.ServerResponseDto;
 import com.skyrone.drone.demo.model.Drone;
 import com.skyrone.drone.demo.model.DroneMaintenance;
-import com.skyrone.drone.demo.model.FlightPath;
+import com.skyrone.drone.demo.model.FlightItinerary;
 import com.skyrone.drone.demo.model.FlightPoint;
 import com.skyrone.drone.demo.repository.DroneRepository;
-import com.skyrone.drone.demo.repository.FlightPathRepository;
+import com.skyrone.drone.demo.repository.FlightPathItinerary;
 import com.skyrone.drone.demo.repository.FlightPointRepository;
 import com.skyrone.drone.demo.repository.MaintenanceRepository;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -26,7 +26,7 @@ public class DroneStateService {
     DroneService droneService;
 
     @Autowired
-    FlightPathService flightPathService;
+    FlightItineraryService flightItineraryService;
 
     @Autowired
     DroneRepository droneRepository;
@@ -35,7 +35,7 @@ public class DroneStateService {
     FlightPointRepository flightPointRepository;
 
     @Autowired
-    FlightPathRepository flightPathRepository;
+    FlightPathItinerary flightPathItinerary;
 
     @Autowired
     MaintenanceRepository maintenanceRepository;
@@ -63,12 +63,14 @@ public class DroneStateService {
                     droneStateDto.setMessage(2);
                 }
             } else {
-                FlightPath flightPath = flightPathService.getFlightPathRealTime(id);
-                if (flightPath != null) {
+                FlightItinerary flightItinerary = flightItineraryService.getFlightPathRealTime(id);
+                if (flightItinerary != null) {
                     droneStateDto.setState(1);
                     droneStateDto.setMessage(1);
-                    droneStateDto.setTimeStart(flightPath.getTimeStart());
-                    droneStateDto.setTimeEnd(flightPath.getTimeEnd());
+                    droneStateDto.setTimeStart(flightItinerary.getTimeStart());
+                    droneStateDto.setContentTask(flightItinerary.getTask());
+                    droneStateDto.setTask(flightItinerary.getTask());
+                    droneStateDto.setTimeEnd(flightItinerary.getTimeEnd());
                 } else {
                     droneStateDto.setState(0);
                     droneStateDto.setMessage(0);
@@ -77,7 +79,6 @@ public class DroneStateService {
         }
         return droneStateDto;
     }
-
     public List<DroneStateDto> getAllStateNow() {
         List<Drone> listDrone = droneService.findAll();
         if (listDrone.size() < 1) {
@@ -85,41 +86,59 @@ public class DroneStateService {
         }
         List<DroneStateDto> listDroneState = new ArrayList<>();
         for (Drone drone : listDrone) {
-            listDroneState.add(getById(drone.getId()));
+            if (!drone.isUsed()) {
+                DroneStateDto droneStateDto = new DroneStateDto(drone.getId(), drone.getName(), drone.isUsed());
+                droneStateDto.setMessage(4);
+                droneStateDto.setState(4);
+                listDroneState.add(droneStateDto);
+            } else {
+                listDroneState.add(getById(drone.getId()));
+            }
+
         }
         return listDroneState;
     }
 
+
+
     public List<Drone> getAllDroneAvailable(Date timeStart, Date timeEnd){
-        List<FlightPath> listFlightPath = flightPathService.getFLightPath(timeStart, timeEnd);
-        if (listFlightPath == null) {
-            return null;
-        }
+        List<FlightItinerary> listFlightItinerary = flightItineraryService.getAll(timeStart, timeEnd);
         List<String> listIdDrone = new ArrayList<>();
-        for (FlightPath flightPath : listFlightPath) {
-            listIdDrone.add(flightPath.getIdDrone());
+        if (listFlightItinerary != null) {
+            for (FlightItinerary flightItinerary : listFlightItinerary) {
+                listIdDrone.addAll(flightItinerary.getIdDroneList());
+            }
         }
+
         List<Drone> drones = droneRepository.findByIdNotInAndIsUsed(listIdDrone, true);
         return drones;
     }
 
-    public List<Drone> getAllDroneActive(Date timeStart, Date timeEnd){
-        List<FlightPath> listFlightPath = flightPathService.getFLightPath(timeStart, timeEnd);
-        if (listFlightPath == null) {
+    public List<DroneStateDto> getAllDroneActive(Date timeStart, Date timeEnd){
+        List<FlightItinerary> listFlightItinerary = flightItineraryService.getAll(timeStart, timeEnd);
+        if (listFlightItinerary == null) {
             return null;
         }
-        List<Drone> drones = new ArrayList<>();
-        for (FlightPath flightPath : listFlightPath) {
+        List<DroneStateDto> droneStateDtoList = new ArrayList<>();
+        for (FlightItinerary flightItinerary : listFlightItinerary) {
+            System.out.println(flightItinerary.getIdDroneList().size());
+            List<Drone> listDrone = droneRepository.findByIdInAndIsUsed(flightItinerary.getIdDroneList(), true);
+            if (listDrone != null) {
+                for (Drone drone : listDrone) {
+                    DroneStateDto droneStateDto = new DroneStateDto(drone.getId(), drone.getName(), drone.isUsed());
+                    droneStateDto.setState(1);
+                    droneStateDto.setMessage(1);
+                    droneStateDto.setTimeStart(flightItinerary.getTimeStart());
+                    droneStateDto.setTimeEnd(flightItinerary.getTimeEnd());
+                    droneStateDto.setContentTask(flightItinerary.getTask());
+                    droneStateDto.setTask(flightItinerary.getTask());
 
-            Optional<Drone> drone = droneRepository.findById(flightPath.getIdDrone());
-            if (drone.isPresent()) {
-                if (drone.get().isUsed()) {
-                    drones.add(drone.get());
+                    droneStateDtoList.add(droneStateDto);
                 }
-
             }
+
         }
-        return drones;
+        return droneStateDtoList;
     }
 
     public ServerResponseDto setDroneBroken(String id) {
@@ -139,30 +158,30 @@ public class DroneStateService {
         Optional<Drone> drone = droneRepository.findById(idDrone);
         if (!drone.isPresent()) return new ServerResponseDto(ResponseCase.NOT_FOUND_DRONE);
         if (!drone.get().isUsed()) return new ServerResponseDto(ResponseCase.DRONE_MAINTENANCE);
-        FlightPath flightPath = flightPathService.getFlightPathRealTime(idDrone);
-        if (flightPath == null) {
+        FlightItinerary flightItinerary = flightItineraryService.getFlightPathRealTime(idDrone);
+        if (flightItinerary == null) {
             return new ServerResponseDto(ResponseCase.DRONE_NOT_FLIGHT);
         }
         float locationLat = new Random().nextFloat();
         float locationLng = new Random().nextFloat();
         Date realTime = new Date();
-        float percentBattery = ((float ) (flightPath.getTimeEnd().getTime() - realTime.getTime()))
-                /((float) (flightPath.getTimeEnd().getTime() - flightPath.getTimeStart().getTime())) * 100f;
-        List<FlightPoint> listPoint = flightPointRepository.findByIdFlightPath(flightPath.getId());
+        float percentBattery = ((float ) (flightItinerary.getTimeEnd().getTime() - realTime.getTime()))
+                /((float) (flightItinerary.getTimeEnd().getTime() - flightItinerary.getTimeStart().getTime())) * 100f;
+        List<FlightPoint> listPoint = flightPointRepository.findByIdFlightPath(flightItinerary.getId());
         List<String> listSupervisedObject = new ArrayList<>();
         if (listPoint != null) {
             for (FlightPoint flightPoint : listPoint) {
                 listSupervisedObject.add(flightPoint.getIdSupervisedObject());
             }
         }
-        ParamFlightResponse paramFlightResponse = new ParamFlightResponse(locationLat, locationLng, idDrone, flightPath.getId(), flightPath.getIdSupervisedArea(),
-                listSupervisedObject, flightPath.getHeightFlight(), new Date(), 30.f, percentBattery);
+        ParamFlightResponse paramFlightResponse = new ParamFlightResponse(locationLat, locationLng, idDrone, flightItinerary.getId(), flightItinerary.getIdSupervisedArea(),
+                listSupervisedObject, 20.f, new Date(), 30.f, percentBattery);
         return new ServerResponseDto(ResponseCase.SUCCESS, paramFlightResponse);
     }
 
-    public List<Drone> getAllDroneCharging(Date timeStart, Date timeEnd) {
+    public List<DroneStateDto> getAllDroneCharging(Date timeStart, Date timeEnd) {
         List<DroneMaintenance> droneMaintenanceList = droneMaintenanceService.getByDate(timeStart, timeEnd, false);
-        List<Drone> droneList = new ArrayList<>();
+        List<DroneStateDto> droneList = new ArrayList<>();
         if (droneMaintenanceList.size() < 1) {
             return null;
         }
@@ -170,7 +189,12 @@ public class DroneStateService {
             Optional<Drone> drone = droneService.getById(droneMaintenance.getId());
             if (drone.isPresent()) {
                 if (drone.get().isUsed()) {
-                    droneList.add(drone.get());
+                    DroneStateDto droneStateDto = new DroneStateDto(drone.get().getId(), drone.get().getName(), true);
+                    droneStateDto.setState(2);
+                    droneStateDto.setMessage(2);
+                    droneStateDto.setTimeEnd(droneMaintenance.getTimeEnd());
+                    droneStateDto.setTimeStart(droneMaintenance.getTimeStart());
+                    droneList.add(droneStateDto);
                 }
             }
         }
@@ -178,9 +202,9 @@ public class DroneStateService {
     }
 
 
-    public List<Drone> getAllDroneMaintenance(Date timeStart, Date timeEnd) {
+    public List<DroneStateDto> getAllDroneMaintenance(Date timeStart, Date timeEnd) {
         List<DroneMaintenance> droneMaintenanceList = droneMaintenanceService.getByDate(timeStart, timeEnd, true);
-        List<Drone> droneList = new ArrayList<>();
+        List<DroneStateDto> droneList = new ArrayList<>();
         if (droneMaintenanceList.size() < 1) {
             return null;
         }
@@ -188,7 +212,12 @@ public class DroneStateService {
             Optional<Drone> drone = droneService.getById(droneMaintenance.getId());
             if (drone.isPresent()) {
                 if (drone.get().isUsed()) {
-                    droneList.add(drone.get());
+                    DroneStateDto droneStateDto = new DroneStateDto(drone.get().getId(), drone.get().getName(), true);
+                    droneStateDto.setState(2);
+                    droneStateDto.setMessage(2);
+                    droneList.add(droneStateDto);
+                    droneStateDto.setTimeEnd(droneMaintenance.getTimeEnd());
+                    droneStateDto.setTimeStart(droneMaintenance.getTimeStart());
                 }
             }
         }
@@ -208,23 +237,25 @@ public class DroneStateService {
             droneStateDto.setMessage(4);
             droneStateDtoList.add(droneStateDto);
         }
-        List<FlightPath> flightPaths;
+        List<FlightItinerary> flightItineraries;
         if (timeStart != null && timeEnd != null) {
-            flightPaths  = flightPathRepository.getPathByIdDroneDate(timeStart, timeEnd,  id);
+            flightItineraries = flightPathItinerary.getPathByIdDroneDate(timeStart, timeEnd,  id);
         } else if (timeStart != null) {
-            flightPaths = flightPathRepository.getPathByIdDroneFrom(timeStart, id);
+            flightItineraries = flightPathItinerary.getPathByIdDroneFrom(timeStart, id);
         } else if (timeEnd != null) {
-            flightPaths = flightPathRepository.getPathByIdDroneTo(timeEnd, id);
+            flightItineraries = flightPathItinerary.getPathByIdDroneTo(timeEnd, id);
         } else {
-            flightPaths = flightPathRepository.findByIdDrone(id);
+            flightItineraries = flightPathItinerary.findByIdDrone(id);
         }
-        if (flightPaths != null) {
-            for (FlightPath flightPath : flightPaths) {
+        if (flightItineraries != null) {
+            for (FlightItinerary flightItinerary : flightItineraries) {
                 droneStateDto = new DroneStateDto(drone.getId(), drone.getName(), drone.isUsed());
                 droneStateDto.setState(1);
                 droneStateDto.setMessage(1);
-                droneStateDto.setTimeStart(flightPath.getTimeStart());
-                droneStateDto.setTimeEnd(flightPath.getTimeEnd());
+                droneStateDto.setTimeStart(flightItinerary.getTimeStart());
+                droneStateDto.setTimeEnd(flightItinerary.getTimeEnd());
+                droneStateDto.setContentTask(flightItinerary.getTask());
+                droneStateDto.setTask(flightItinerary.getTask());
                 droneStateDtoList.add(droneStateDto);
             }
         }

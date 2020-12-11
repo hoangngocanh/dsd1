@@ -1,7 +1,9 @@
 package com.skyrone.drone.demo.controller;
 
 import com.skyrone.drone.demo.dto.DroneStateDto;
+import com.skyrone.drone.demo.dto.ResponseCase;
 import com.skyrone.drone.demo.dto.ServerResponseDto;
+import com.skyrone.drone.demo.model.Drone;
 import com.skyrone.drone.demo.service.DroneStateService;
 import io.swagger.annotations.ApiOperation;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -65,8 +67,12 @@ public class DroneStateController {
 
     @ApiOperation("Lấy danh sách drone bị hỏng")
     @GetMapping("/getAllDroneBroken")
-    public ResponseEntity getAllDroneBroken() {
-        return ResponseEntity.ok().body(droneStateService.getAllDroneBroken());
+    public ResponseEntity<ServerResponseDto> getAllDroneBroken() {
+        List<Drone> drones = droneStateService.getAllDroneBroken();
+        if (drones == null) {
+            return ResponseEntity.ok().body(new ServerResponseDto(ResponseCase.NOT_FOUND_DRONE));
+        }
+        return ResponseEntity.ok().body(new ServerResponseDto(ResponseCase.NOT_FOUND_DRONE, drones));
     }
 
     @ApiOperation(value = "Ngày giờ có dạng \"yyyy-MM-dd HH:mm:ss\" vd: 2020-11-30 11: 11:11 " +
@@ -74,9 +80,14 @@ public class DroneStateController {
             " *** if timeStart == null && timeEnd == null lọc tất cả danh sách dron" +
             "*** if 1 trong 2 cái == null lọc sau ngày timeStart hoặc trước ngày timeEnd ", response = List.class)
     @GetMapping("/getAllDroneCharging")
-    public ResponseEntity getAllDroneCharging(@RequestParam(value = "timeStart", required = false) @DateTimeFormat(pattern = "yyyy-MM-dd HH:mm:ss") Date timeStart,
+    public ResponseEntity<ServerResponseDto> getAllDroneCharging(@RequestParam(value = "timeStart", required = false) @DateTimeFormat(pattern = "yyyy-MM-dd HH:mm:ss") Date timeStart,
                                             @RequestParam(value = "timeEnd", required = false) @DateTimeFormat(pattern = "yyyy-MM-dd HH:mm:ss")Date timeEnd) {
-        return ResponseEntity.ok().body(droneStateService.getAllDroneCharging(timeStart, timeEnd));
+        List<DroneStateDto> droneStateDtoList =
+                droneStateService.getAllDroneCharging(timeStart, timeEnd);
+        if (droneStateDtoList == null) {
+            return ResponseEntity.ok().body(new ServerResponseDto(ResponseCase.NOT_FOUND_DRONE));
+        }
+        return ResponseEntity.ok().body(new ServerResponseDto(ResponseCase.DRONE_CHARGING, droneStateDtoList));
     }
 
     @GetMapping("/getParameterFlightRealTime/{id}")
@@ -86,9 +97,14 @@ public class DroneStateController {
 
     @ApiOperation(value = "Lấy danh sách drone đang bảo trì trong khoảng thời gian", response = List.class)
     @GetMapping("/getAllDroneMaintenance")
-    public ResponseEntity getAllDroneMaintenance(@RequestParam(value = "timeStart", required = false) @DateTimeFormat(pattern = "yyyy-MM-dd HH:mm:ss") Date timeStart,
+    public ResponseEntity<ServerResponseDto> getAllDroneMaintenance(@RequestParam(value = "timeStart", required = false) @DateTimeFormat(pattern = "yyyy-MM-dd HH:mm:ss") Date timeStart,
                                               @RequestParam(value = "timeEnd", required = false) @DateTimeFormat(pattern = "yyyy-MM-dd HH:mm:ss")Date timeEnd) {
-        return ResponseEntity.ok().body(droneStateService.getAllDroneMaintenance(timeStart, timeEnd));
+        List<DroneStateDto> droneStateDtoList = droneStateService.getAllDroneMaintenance(timeStart, timeEnd);
+        if (droneStateDtoList == null) {
+            return ResponseEntity.ok().body(new ServerResponseDto(ResponseCase.NOT_FOUND_DRONE));
+        }
+        return ResponseEntity.ok().body(new ServerResponseDto(ResponseCase.DRONE_MAINTENANCE,
+                droneStateDtoList));
     }
 
 

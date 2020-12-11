@@ -16,5 +16,7 @@ public interface ResponseCase {
     ResponseStatus DRONE_BUSY = new ResponseStatus(4003, "drone is busy");
 
     ResponseStatus NOT_FOUND_FLIGHT = new ResponseStatus(4004, "not found flight path please check id flight path");
-    ResponseStatus DRONE_AVAILABLE = new ResponseStatus(4004, "drone rảnh");
+    ResponseStatus DRONE_AVAILABLE = new ResponseStatus(4005, "drone rảnh");
+    ResponseStatus NOT_DATA = new ResponseStatus(4006, "không tìm thấy");
+    ResponseStatus DRONE_CHARGING = new ResponseStatus(4007, "drone charging");
 }

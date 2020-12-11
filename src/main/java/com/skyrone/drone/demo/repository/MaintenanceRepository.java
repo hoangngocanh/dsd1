@@ -1,7 +1,6 @@
 package com.skyrone.drone.demo.repository;
 
 import com.skyrone.drone.demo.model.DroneMaintenance;
-import com.skyrone.drone.demo.model.FlightPath;
 import org.springframework.data.mongodb.repository.MongoRepository;
 import org.springframework.data.mongodb.repository.Query;
 

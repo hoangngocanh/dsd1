@@ -4,14 +4,11 @@ import com.skyrone.drone.demo.dto.ResponseCase;
 import com.skyrone.drone.demo.dto.ServerResponseDto;
 import com.skyrone.drone.demo.model.Drone;
 import com.skyrone.drone.demo.service.DroneService;
-import com.skyrone.drone.demo.service.FlightPathService;
+import com.skyrone.drone.demo.service.FlightItineraryService;
 import io.swagger.annotations.ApiOperation;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
-import springfox.documentation.annotations.ApiIgnore;
-
-import java.util.concurrent.ThreadLocalRandom;
 
 @RestController
 @CrossOrigin(origins = "*", allowedHeaders = "*")
@@ -22,7 +19,7 @@ public class DroneController {
     DroneService droneService;
 
     @Autowired
-    FlightPathService flightPathService;
+    FlightItineraryService flightItineraryService;
 
     @GetMapping("/getByCode/{code}")
     public ResponseEntity<Drone> getByCode(@PathVariable("code")String code) {
