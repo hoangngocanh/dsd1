@@ -19,4 +19,5 @@ public interface ResponseCase {
     ResponseStatus DRONE_AVAILABLE = new ResponseStatus(4005, "drone rảnh");
     ResponseStatus NOT_DATA = new ResponseStatus(4006, "không tìm thấy");
     ResponseStatus DRONE_CHARGING = new ResponseStatus(4007, "drone charging");
+    ResponseStatus DRONE_BROKEN = new ResponseStatus(4008, "drone broken");
 }

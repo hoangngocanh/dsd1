@@ -72,7 +72,7 @@ public class DroneStateController {
         if (drones == null) {
             return ResponseEntity.ok().body(new ServerResponseDto(ResponseCase.NOT_FOUND_DRONE));
         }
-        return ResponseEntity.ok().body(new ServerResponseDto(ResponseCase.NOT_FOUND_DRONE, drones));
+        return ResponseEntity.ok().body(new ServerResponseDto(ResponseCase.DRONE_BROKEN, drones));
     }
 
     @ApiOperation(value = "Ngày giờ có dạng \"yyyy-MM-dd HH:mm:ss\" vd: 2020-11-30 11: 11:11 " +

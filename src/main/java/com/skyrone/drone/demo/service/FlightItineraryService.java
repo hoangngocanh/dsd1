@@ -5,6 +5,7 @@ import com.skyrone.drone.demo.dto.ResponseCase;
 import com.skyrone.drone.demo.dto.ServerResponseDto;
 import com.skyrone.drone.demo.model.Drone;
 import com.skyrone.drone.demo.model.FlightItinerary;
+import com.skyrone.drone.demo.model.LinkDronePath;
 import com.skyrone.drone.demo.repository.DroneRepository;
 import com.skyrone.drone.demo.repository.FlightPathItinerary;
 import com.skyrone.drone.demo.repository.FlightPointRepository;
@@ -35,13 +36,8 @@ public class FlightItineraryService {
 
 
     public ServerResponseDto save(FlightItinerary flightItinerary) {
-        for (String idDrone : flightItinerary.getIdDroneList()) {
-            Optional<Drone> drone = droneRepository.findById(idDrone);
-            if (!drone.isPresent()) {
-                return new ServerResponseDto(ResponseCase.NOT_FOUND_DRONE, idDrone);
-            }
-        }
-        for (String idDrone : flightItinerary.getIdDroneList()) {
+        for (LinkDronePath idDrones : flightItinerary.getLinkDronePaths()) {
+            String idDrone = idDrones.getIdDrone();
             DroneStateDto droneStateDto = droneStateService.getById(idDrone);
             if (droneStateDto == null) {
                 return new ServerResponseDto(ResponseCase.NOT_FOUND_DRONE, idDrone);

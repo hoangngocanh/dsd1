@@ -19,27 +19,12 @@ public class FlightItineraryController {
     @Autowired
     FlightItineraryService flightItineraryService;
 
-//    @GetMapping("/makeData")
-//    public void makeData() {
-//
-//        FlightPath flightPath = new FlightPath("5fbc93a4b113564759f81c1f", "Duong bay 2", 1,
-//                "idSupervisedArea", DateUtils.parseDate("2020-12-20"), DateUtils.parseDate("2020-12-31"), 100);
-//        flightPathService.save(flightPath);
-//    }
 
     @PostMapping("/save")
     public ResponseEntity<ServerResponseDto> savePath(@RequestBody FlightItinerary flightItinerary) {
 
         return ResponseEntity.ok().body(flightItineraryService.save(flightItinerary));
     }
-
-//    @GetMapping("/getAllPathOfDrone")
-//    @ApiOperation(value = "Ngày giờ có dạng \"yyyy-MM-dd HH:mm:ss\" vd: 2020-11-30 11: 11:11 ____ Lấy tất cả đường bay của 1 con drone theo ngày giờ")
-//    public ResponseEntity getAllPathOfDrone(@RequestParam("idDrone") String idDrone,
-//                                            @RequestParam(value = "timeStart", required = false) @DateTimeFormat(pattern = "yyyy-MM-dd") Date timeStart,
-//                                            @RequestParam(value = "timeEnd", required = false) @DateTimeFormat(pattern = "yyyy-MM-dd")Date timeEnd) {
-//        return ResponseEntity.ok().body(flightItineraryService.getAllhOfDrone(idDrone, timeStart, timeEnd));
-//    }
 
     @GetMapping("/getAll")
     @ApiOperation(value = "Ngày giờ có dạng \"yyyy-MM-dd HH:mm:ss\" vd: 2020-11-30 11: 11:11 __ Lấy tất cả danh sách hành trình bay theo ngày giờ")

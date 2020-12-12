@@ -4,10 +4,7 @@ import com.skyrone.drone.demo.dto.DroneStateDto;
 import com.skyrone.drone.demo.dto.ParamFlightResponse;
 import com.skyrone.drone.demo.dto.ResponseCase;
 import com.skyrone.drone.demo.dto.ServerResponseDto;
-import com.skyrone.drone.demo.model.Drone;
-import com.skyrone.drone.demo.model.DroneMaintenance;
-import com.skyrone.drone.demo.model.FlightItinerary;
-import com.skyrone.drone.demo.model.FlightPoint;
+import com.skyrone.drone.demo.model.*;
 import com.skyrone.drone.demo.repository.DroneRepository;
 import com.skyrone.drone.demo.repository.FlightPathItinerary;
 import com.skyrone.drone.demo.repository.FlightPointRepository;
@@ -39,6 +36,8 @@ public class DroneStateService {
 
     @Autowired
     MaintenanceRepository maintenanceRepository;
+
+
 
     public DroneStateDto getById(String id) {
         Optional<Drone> droneOptional = droneService.getById(id);
@@ -106,8 +105,13 @@ public class DroneStateService {
         List<String> listIdDrone = new ArrayList<>();
         if (listFlightItinerary != null) {
             for (FlightItinerary flightItinerary : listFlightItinerary) {
-                listIdDrone.addAll(flightItinerary.getIdDroneList());
+                    listIdDrone.addAll(flightItinerary.getListIdDrone());
             }
+        }
+
+        List<DroneMaintenance> droneMaintenanceList = maintenanceRepository.findAll();
+        for (DroneMaintenance droneMaintenance : droneMaintenanceList) {
+            listIdDrone.add(droneMaintenance.getId());
         }
 
         List<Drone> drones = droneRepository.findByIdNotInAndIsUsed(listIdDrone, true);
@@ -121,8 +125,7 @@ public class DroneStateService {
         }
         List<DroneStateDto> droneStateDtoList = new ArrayList<>();
         for (FlightItinerary flightItinerary : listFlightItinerary) {
-            System.out.println(flightItinerary.getIdDroneList().size());
-            List<Drone> listDrone = droneRepository.findByIdInAndIsUsed(flightItinerary.getIdDroneList(), true);
+            List<Drone> listDrone = droneRepository.findByIdInAndIsUsed(flightItinerary.getListIdDrone(), true);
             if (listDrone != null) {
                 for (Drone drone : listDrone) {
                     DroneStateDto droneStateDto = new DroneStateDto(drone.getId(), drone.getName(), drone.isUsed());
@@ -175,7 +178,7 @@ public class DroneStateService {
             }
         }
         ParamFlightResponse paramFlightResponse = new ParamFlightResponse(locationLat, locationLng, idDrone, flightItinerary.getId(), flightItinerary.getIdSupervisedArea(),
-                listSupervisedObject, 20.f, new Date(), 30.f, percentBattery);
+                listSupervisedObject, flightItinerary.getIdCampaign(), 20.f, new Date(), 30.f, percentBattery);
         return new ServerResponseDto(ResponseCase.SUCCESS, paramFlightResponse);
     }
 
