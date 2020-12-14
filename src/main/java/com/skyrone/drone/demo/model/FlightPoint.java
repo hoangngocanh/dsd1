@@ -17,7 +17,7 @@ public class FlightPoint {
     private Float locationLng;
     private String idFlightPath;
     private Float timeStop;
-    private Date timeCome;
+    private Float timeCome;
     private String note;
     private String idSupervisedObject;
     private Float flightHeight;
