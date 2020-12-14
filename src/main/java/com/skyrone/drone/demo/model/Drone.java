@@ -24,6 +24,8 @@ public class Drone {
     private float maxFlightTime; //phut'
     private float maxFlightHeight;    //m
     private float rangeBattery;
+    private String urlImage = "https://drive.google.com/file/d/1sfh6GyIVZBCte-ChWBTLhM9fPJKhRAkz/view";
+    private int type = 0;
     public Drone() {
     }
 

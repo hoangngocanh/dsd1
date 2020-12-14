@@ -6,8 +6,7 @@ import com.skyrone.drone.demo.dto.ResponseCase;
 import com.skyrone.drone.demo.dto.ServerResponseDto;
 import com.skyrone.drone.demo.model.*;
 import com.skyrone.drone.demo.repository.DroneRepository;
-import com.skyrone.drone.demo.repository.FlightPathItinerary;
-import com.skyrone.drone.demo.repository.FlightPointRepository;
+import com.skyrone.drone.demo.repository.FlightItineraryRepository;
 import com.skyrone.drone.demo.repository.MaintenanceRepository;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
@@ -28,14 +27,15 @@ public class DroneStateService {
     @Autowired
     DroneRepository droneRepository;
 
-    @Autowired
-    FlightPointRepository flightPointRepository;
 
     @Autowired
-    FlightPathItinerary flightPathItinerary;
+    FlightItineraryRepository flightItineraryRepository;
 
     @Autowired
     MaintenanceRepository maintenanceRepository;
+
+    @Autowired
+    FlightPathService flightPathService;
 
 
 
@@ -170,13 +170,17 @@ public class DroneStateService {
         Date realTime = new Date();
         float percentBattery = ((float ) (flightItinerary.getTimeEnd().getTime() - realTime.getTime()))
                 /((float) (flightItinerary.getTimeEnd().getTime() - flightItinerary.getTimeStart().getTime())) * 100f;
-        List<FlightPoint> listPoint = flightPointRepository.findByIdFlightPath(flightItinerary.getId());
+        Optional<FlightPath> flightPath = flightPathService.getById(flightItinerary.getLinkDronePaths().get(0).getListIdFlightPath().get(0));
+
         List<String> listSupervisedObject = new ArrayList<>();
-        if (listPoint != null) {
-            for (FlightPoint flightPoint : listPoint) {
+        if (!flightPath.isPresent()) {
+            listSupervisedObject.add("000");
+        } else {
+            for (FlightPoint flightPoint : flightPath.get().getFlightPoints()) {
                 listSupervisedObject.add(flightPoint.getIdSupervisedObject());
             }
         }
+
         ParamFlightResponse paramFlightResponse = new ParamFlightResponse(locationLat, locationLng, idDrone, flightItinerary.getId(), flightItinerary.getIdSupervisedArea(),
                 listSupervisedObject, flightItinerary.getIdCampaign(), 20.f, new Date(), 30.f, percentBattery);
         return new ServerResponseDto(ResponseCase.SUCCESS, paramFlightResponse);
@@ -242,13 +246,13 @@ public class DroneStateService {
         }
         List<FlightItinerary> flightItineraries;
         if (timeStart != null && timeEnd != null) {
-            flightItineraries = flightPathItinerary.getPathByIdDroneDate(timeStart, timeEnd,  id);
+            flightItineraries = flightItineraryRepository.getPathByIdDroneDate(timeStart, timeEnd,  id);
         } else if (timeStart != null) {
-            flightItineraries = flightPathItinerary.getPathByIdDroneFrom(timeStart, id);
+            flightItineraries = flightItineraryRepository.getPathByIdDroneFrom(timeStart, id);
         } else if (timeEnd != null) {
-            flightItineraries = flightPathItinerary.getPathByIdDroneTo(timeEnd, id);
+            flightItineraries = flightItineraryRepository.getPathByIdDroneTo(timeEnd, id);
         } else {
-            flightItineraries = flightPathItinerary.findByIdDrone(id);
+            flightItineraries = flightItineraryRepository.findByIdDrone(id);
         }
         if (flightItineraries != null) {
             for (FlightItinerary flightItinerary : flightItineraries) {

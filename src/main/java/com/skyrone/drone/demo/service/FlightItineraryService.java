@@ -7,8 +7,7 @@ import com.skyrone.drone.demo.model.Drone;
 import com.skyrone.drone.demo.model.FlightItinerary;
 import com.skyrone.drone.demo.model.LinkDronePath;
 import com.skyrone.drone.demo.repository.DroneRepository;
-import com.skyrone.drone.demo.repository.FlightPathItinerary;
-import com.skyrone.drone.demo.repository.FlightPointRepository;
+import com.skyrone.drone.demo.repository.FlightItineraryRepository;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 
@@ -19,16 +18,12 @@ import java.util.Optional;
 @Service
 public class FlightItineraryService {
     @Autowired
-    FlightPathItinerary flightPathItinerary;
+    FlightItineraryRepository flightItineraryRepository;
 
-    @Autowired
-    FlightPointRepository flightPointRepository;
 
     @Autowired
     DroneRepository droneRepository;
 
-    @Autowired
-    FlightPointService flightPointService;
 
     @Autowired
     DroneStateService droneStateService;
@@ -46,23 +41,23 @@ public class FlightItineraryService {
                 return new ServerResponseDto(ResponseCase.DRONE_BUSY, idDrone);
             }
         }
-        return new ServerResponseDto(ResponseCase.SUCCESS, flightPathItinerary.save(flightItinerary));
+        return new ServerResponseDto(ResponseCase.SUCCESS, flightItineraryRepository.save(flightItinerary));
     }
 
     public List<FlightItinerary> getAll(Date timeStart, Date timeEnd) {
         if (timeStart != null && timeEnd != null) {
-            return flightPathItinerary.getAllPathActive(timeStart, timeEnd);
+            return flightItineraryRepository.getAllPathActive(timeStart, timeEnd);
         } else if (timeStart != null) {
-            return flightPathItinerary.getAllPathActiveFrom(timeStart);
+            return flightItineraryRepository.getAllPathActiveFrom(timeStart);
         } else if (timeEnd != null) {
-            return flightPathItinerary.getAllPathActiveTo(timeEnd);
+            return flightItineraryRepository.getAllPathActiveTo(timeEnd);
         } else {
-            return flightPathItinerary.findAll();
+            return flightItineraryRepository.findAll();
         }
     }
 
 
-    public List<FlightItinerary> getAllhOfDrone(String idDrone, Date timeStart, Date timeEnd) {
+    public List<FlightItinerary> getAllOfDrone(String idDrone, Date timeStart, Date timeEnd) {
         Optional<Drone> drone = droneRepository.findById(idDrone);
         if (!drone.isPresent()) {
             return null;
@@ -72,13 +67,13 @@ public class FlightItineraryService {
         }
         List<FlightItinerary> flightItineraries;
         if (timeStart != null && timeEnd != null) {
-            flightItineraries = flightPathItinerary.getPathByIdDroneDate(timeStart, timeEnd, idDrone);
+            flightItineraries = flightItineraryRepository.getPathByIdDroneDate(timeStart, timeEnd, idDrone);
         } else if (timeStart != null) {
-            flightItineraries = flightPathItinerary.getPathByIdDroneFrom(timeStart, idDrone);
+            flightItineraries = flightItineraryRepository.getPathByIdDroneFrom(timeStart, idDrone);
         } else if (timeEnd != null) {
-            flightItineraries = flightPathItinerary.getPathByIdDroneTo(timeEnd, idDrone);
+            flightItineraries = flightItineraryRepository.getPathByIdDroneTo(timeEnd, idDrone);
         } else {
-            flightItineraries = flightPathItinerary.findByIdDrone(idDrone);
+            flightItineraries = flightItineraryRepository.findByIdDrone(idDrone);
         }
 
         if (flightItineraries == null) {
@@ -89,7 +84,7 @@ public class FlightItineraryService {
 
 
     public FlightItinerary getFlightPathRealTime(String idDrone) {
-        List<FlightItinerary> flightItineraryList =  flightPathItinerary.getByIdDroneRealTime(new Date(), idDrone);
+        List<FlightItinerary> flightItineraryList =  flightItineraryRepository.getByIdDroneRealTime(new Date(), idDrone);
         if (flightItineraryList.size() < 1) {
             return null;
         }
@@ -97,7 +92,7 @@ public class FlightItineraryService {
     }
 
     public void delete(String id) {
-        flightPathItinerary.deleteById(id);
+        flightItineraryRepository.deleteById(id);
     }
 
 }

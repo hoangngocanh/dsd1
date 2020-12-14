@@ -33,7 +33,7 @@ public class DroneStateDto {
         } else if (task == 2) {
             this.contentTask = "Giám sát đê điều ";
         } else if (task == 3) {
-            this.contentTask = "Giám sát lưới điẹn";
+            this.contentTask = "Giám sát lưới điện";
          } else if (task == 4) {
              this.contentTask = "Giám sát cây trồng";
          } else {

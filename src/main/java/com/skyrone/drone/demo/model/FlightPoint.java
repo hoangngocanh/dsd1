@@ -11,10 +11,8 @@ import java.util.Date;
 @Getter
 @Setter
 @AllArgsConstructor
-@Document(collection = "flight_point")
 public class FlightPoint {
-    @Id
-    private String id;
+
     private Float locationLat;
     private Float locationLng;
     private String idFlightPath;

@@ -7,7 +7,7 @@ import org.springframework.data.mongodb.repository.Query;
 import java.util.Date;
 import java.util.List;
 
-public interface FlightPathItinerary extends MongoRepository<FlightItinerary, String> {
+public interface FlightItineraryRepository extends MongoRepository<FlightItinerary, String> {
     @Query("{$and : [{ 'timeStart': {$gte : ?0}}, {'timeEnd' : {$lte : ?1}}]}")
     List<FlightItinerary> getAllPathActive(Date timeStart, Date timeEnd);
 

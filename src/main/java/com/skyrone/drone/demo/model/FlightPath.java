@@ -17,6 +17,8 @@ public class FlightPath {
     private String name;
     private String idSupervisedArea;
 
+    private List<FlightPoint> flightPoints;
+
     public FlightPath() {
     }
 }
