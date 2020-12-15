@@ -25,6 +25,14 @@ public class FlightPathService {
         return flightPathRepository.save(flightPath);
     }
 
+    public void saveList(List<FlightPath> flightPathList) {
+        if (flightPathList != null) {
+            for (FlightPath flightPath : flightPathList) {
+                flightPathRepository.save(flightPath);
+            }
+        }
+    }
+
     public void delete(String id) {
         flightPathRepository.deleteById(id);
     }

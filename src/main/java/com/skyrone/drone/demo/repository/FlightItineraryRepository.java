@@ -17,20 +17,23 @@ public interface FlightItineraryRepository extends MongoRepository<FlightItinera
     @Query("{'timeEnd' : {$lte : ?1}}")
     List<FlightItinerary> getAllPathActiveTo(Date timeEnd);
 
-    @Query("{$and : [{ 'timeStart': {$gte : ?0}}, {'timeEnd' : {$lte : ?1}}, {'idDroneList' : {'$all' : [?2]}}]}")
+    @Query("{$and : [{ 'timeStart': {$gte : ?0}}, {'timeEnd' : {$lte : ?1}}, {'linkDronePaths' : { $elemMatch : {'idDrone' : {'$all' : [?1]}}}}]}")
     List<FlightItinerary> getPathByIdDroneDate(Date timeStart, Date timeEnd, String idDrone);
 
-    @Query("{$and : [{ 'timeStart': {$gte : ?0}}, {'idDrone' : ?1}]}")
+    @Query("{$and : [{ 'timeStart': {$gte : ?0}}, {'linkDronePaths' : { $elemMatch : {'idDrone' : {'$all' : [?1]}}}}]}")
     List<FlightItinerary> getPathByIdDroneFrom(Date timeStart, String idDrone);
 
-    @Query("{$and : [{'timeEnd' : {$lte : ?0}}, {'idDroneList' : {'$all' : [?1]}}]}")
+    @Query("{$and : [{'timeEnd' : {$lte : ?0}}, {'linkDronePaths' : { $elemMatch : {'idDrone' : {'$all' : [?1]}}}}]}")
     List<FlightItinerary> getPathByIdDroneTo(Date timeEnd, String idDrone);
 
-    @Query("{$and : [{'timeEnd' : {$gte : ?0}}, {'timeStart' : {$lte : ?0}}, {'idDroneList' : {'$all' : [?1]}} ]}")
+    @Query("{$and : [{'timeEnd' : {$gte : ?0}}, {'timeStart' : {$lte : ?0}}, {'linkDronePaths' : { $elemMatch : {'idDrone' : {'$all' : [?1]}}}}]}")
     List<FlightItinerary> getByIdDroneRealTime(Date realTime, String idDrone);
 
     @Query("{'idDroneList' : {'$all' : [?0]}}")
     List<FlightItinerary> findByIdDrone(String id);
 
     List<FlightItinerary> findByIdSupervisedArea(String id);
+
+    @Query("{$and : [{'timeEnd' : {$gte : ?0}}, {'timeStart' : {$lte : ?0}}]}")
+    List<FlightItinerary> getAllPathActiveRealTime(Date date);
 }

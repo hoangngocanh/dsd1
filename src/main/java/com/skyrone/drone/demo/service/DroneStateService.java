@@ -286,4 +286,30 @@ public class DroneStateService {
         }
         return new ServerResponseDto(ResponseCase.SUCCESS, droneStateDtoList);
     }
+
+    public List<DroneStateDto> getAllDroneActiveRealTime() {
+        List<FlightItinerary> listFlightItinerary = flightItineraryService.getAllRealTime();
+        if (listFlightItinerary == null) {
+            return null;
+        }
+        List<DroneStateDto> droneStateDtoList = new ArrayList<>();
+        for (FlightItinerary flightItinerary : listFlightItinerary) {
+            List<Drone> listDrone = droneRepository.findByIdInAndIsUsed(flightItinerary.getListIdDrone(), true);
+            if (listDrone != null) {
+                for (Drone drone : listDrone) {
+                    DroneStateDto droneStateDto = new DroneStateDto(drone.getId(), drone.getName(), drone.isUsed());
+                    droneStateDto.setState(1);
+                    droneStateDto.setMessage(1);
+                    droneStateDto.setTimeStart(flightItinerary.getTimeStart());
+                    droneStateDto.setTimeEnd(flightItinerary.getTimeEnd());
+                    droneStateDto.setContentTask(flightItinerary.getTask());
+                    droneStateDto.setTask(flightItinerary.getTask());
+
+                    droneStateDtoList.add(droneStateDto);
+                }
+            }
+
+        }
+        return droneStateDtoList;
+    }
 }

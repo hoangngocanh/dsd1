@@ -51,6 +51,12 @@ public class DroneStateController {
         return ResponseEntity.ok().body(droneStateService.getAllDroneActive(timeStart, timeEnd));
     }
 
+    @GetMapping("/getAllDroneActiveRealTime")
+    public ResponseEntity getAllDroneActiveRealTime() {
+
+        return ResponseEntity.ok().body(droneStateService.getAllDroneActiveRealTime());
+    }
+
     @ApiOperation(value = "Ngày giờ có dạng \"yyyy-MM-dd HH:mm:ss\" vd: 2020-11-30 11: 11:11 " +
             "Lấy danh sách drone có sẵn nhưng chưa hoạt động đang ở trạng thái chờ trong kho", response = List.class)
     @GetMapping("/getAllDroneAvailable")
