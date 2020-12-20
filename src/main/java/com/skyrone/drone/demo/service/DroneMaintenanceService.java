@@ -33,6 +33,11 @@ public class DroneMaintenanceService {
         return maintenanceRepository.findByIdNow(now, id);
     }
 
+    List<DroneMaintenance> getAllNow() {
+        Date now = new Date();
+        return maintenanceRepository.findAllNow(now);
+    }
+
 
     public List<DroneMaintenance> getByDate(Date timeStart, Date timeEnd, boolean isMaintenance) {
         if (timeStart != null && timeEnd != null) {

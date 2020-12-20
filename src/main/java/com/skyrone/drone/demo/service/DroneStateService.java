@@ -67,9 +67,10 @@ public class DroneStateService {
                     droneStateDto.setState(1);
                     droneStateDto.setMessage(1);
                     droneStateDto.setTimeStart(flightItinerary.getTimeStart());
-                    droneStateDto.setContentTask(flightItinerary.getTask());
-                    droneStateDto.setTask(flightItinerary.getTask());
+                    droneStateDto.setContentProject(flightItinerary.getTask());
+                    droneStateDto.setProject(flightItinerary.getTask());
                     droneStateDto.setTimeEnd(flightItinerary.getTimeEnd());
+                    droneStateDto.setNameTask(flightItinerary.getName());
                 } else {
                     droneStateDto.setState(0);
                     droneStateDto.setMessage(0);
@@ -78,24 +79,51 @@ public class DroneStateService {
         }
         return droneStateDto;
     }
+
+
     public List<DroneStateDto> getAllStateNow() {
         List<Drone> listDrone = droneService.findAll();
+        HashMap<String, DroneStateDto> hashMapState = new HashMap<String, DroneStateDto>();
+
         if (listDrone.size() < 1) {
             return null;
         }
-        List<DroneStateDto> listDroneState = new ArrayList<>();
+
         for (Drone drone : listDrone) {
-            if (!drone.isUsed()) {
-                DroneStateDto droneStateDto = new DroneStateDto(drone.getId(), drone.getName(), drone.isUsed());
+            DroneStateDto droneStateDto = new DroneStateDto(drone.getId(), drone.getName(), drone.isUsed());
+            if (drone.isUsed()) {
+                droneStateDto.setMessage(0);
+                droneStateDto.setState(0);
+            } else {
                 droneStateDto.setMessage(4);
                 droneStateDto.setState(4);
-                listDroneState.add(droneStateDto);
-            } else {
-                listDroneState.add(getById(drone.getId()));
             }
-
+            hashMapState.put(drone.getId(), droneStateDto);
         }
-        return listDroneState;
+
+        List<DroneStateDto> listDroneFlighting = new ArrayList<>();
+        listDroneFlighting = getAllDroneActiveRealTime();
+        for (DroneStateDto droneStateDto : listDroneFlighting) {
+            hashMapState.put(droneStateDto.getIdDrone(), droneStateDto);
+        }
+
+        List<DroneMaintenance> listDroneMaintenance = droneMaintenanceService.getAllNow();
+        for (DroneMaintenance droneMaintenance : listDroneMaintenance) {
+            DroneStateDto droneStateDto = new DroneStateDto(droneMaintenance.getId(), droneMaintenance.getName(), true);
+            if (droneMaintenance.isMaintenance()) {
+                droneStateDto.setMessage(2);
+                droneStateDto.setState(2);
+            } else {
+                droneStateDto.setMessage(3);
+                droneStateDto.setState(3);
+            }
+            hashMapState.put(droneStateDto.getIdDrone(), droneStateDto);
+        }
+
+        List<DroneStateDto> list = new ArrayList<DroneStateDto>(hashMapState.values());
+
+
+        return list;
     }
 
 
@@ -133,9 +161,9 @@ public class DroneStateService {
                     droneStateDto.setMessage(1);
                     droneStateDto.setTimeStart(flightItinerary.getTimeStart());
                     droneStateDto.setTimeEnd(flightItinerary.getTimeEnd());
-                    droneStateDto.setContentTask(flightItinerary.getTask());
-                    droneStateDto.setTask(flightItinerary.getTask());
-
+                    droneStateDto.setContentProject(flightItinerary.getTask());
+                    droneStateDto.setProject(flightItinerary.getTask());
+                    droneStateDto.setNameTask(flightItinerary.getName());
                     droneStateDtoList.add(droneStateDto);
                 }
             }
@@ -261,8 +289,9 @@ public class DroneStateService {
                 droneStateDto.setMessage(1);
                 droneStateDto.setTimeStart(flightItinerary.getTimeStart());
                 droneStateDto.setTimeEnd(flightItinerary.getTimeEnd());
-                droneStateDto.setContentTask(flightItinerary.getTask());
-                droneStateDto.setTask(flightItinerary.getTask());
+                droneStateDto.setContentProject(flightItinerary.getTask());
+                droneStateDto.setProject(flightItinerary.getTask());
+                droneStateDto.setNameTask(flightItinerary.getName());
                 droneStateDtoList.add(droneStateDto);
             }
         }
@@ -302,9 +331,9 @@ public class DroneStateService {
                     droneStateDto.setMessage(1);
                     droneStateDto.setTimeStart(flightItinerary.getTimeStart());
                     droneStateDto.setTimeEnd(flightItinerary.getTimeEnd());
-                    droneStateDto.setContentTask(flightItinerary.getTask());
-                    droneStateDto.setTask(flightItinerary.getTask());
-
+                    droneStateDto.setContentProject(flightItinerary.getTask());
+                    droneStateDto.setProject(flightItinerary.getTask());
+                    droneStateDto.setNameTask(flightItinerary.getName());
                     droneStateDtoList.add(droneStateDto);
                 }
             }
@@ -312,4 +341,6 @@ public class DroneStateService {
         }
         return droneStateDtoList;
     }
+
+
 }

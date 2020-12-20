@@ -35,4 +35,7 @@ public interface MaintenanceRepository  extends MongoRepository<DroneMaintenance
 
     @Query("{ 'isMaintenance': ?0}")
     List<DroneMaintenance> findByIsMaintenance(boolean isMaintenance);
+
+    @Query("{$and : [{'timeEnd' : {$gte : ?0}}, {'timeStart' : {$lte : ?0}}]}")
+    List<DroneMaintenance> findAllNow(Date now);
 }
