@@ -20,6 +20,7 @@ public class DroneMaintenanceService {
 
    @Autowired
    DroneService droneService;
+
     List<DroneMaintenance> getAll() {
        return maintenanceRepository.findAll();
    }
@@ -65,5 +66,20 @@ public class DroneMaintenanceService {
             return new ServerResponseDto(ResponseCase.SUCCESS);
         }
         return new ServerResponseDto(ResponseCase.NOT_FOUND_DRONE);
+    }
+
+    public ServerResponseDto getBackDrone(String idDrone) {
+
+            Optional<DroneMaintenance> droneMaintenance = findById(idDrone);
+            if (droneMaintenance.isPresent()) {
+                if (droneMaintenance.get().getTimeStart().after(new Date())) {
+                    delete(idDrone);
+                } else {
+                    droneMaintenance.get().setTimeEnd(new Date());
+                    save(droneMaintenance.get());
+                }
+            }
+
+        return new ServerResponseDto(ResponseCase.SUCCESS);
     }
 }

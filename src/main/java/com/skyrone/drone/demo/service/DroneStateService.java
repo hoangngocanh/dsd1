@@ -13,8 +13,6 @@ import org.springframework.stereotype.Service;
 
 import java.util.*;
 
-import static java.lang.StrictMath.abs;
-
 @Service
 public class DroneStateService {
     @Autowired
@@ -112,6 +110,8 @@ public class DroneStateService {
         List<DroneMaintenance> listDroneMaintenance = droneMaintenanceService.getAllNow();
         for (DroneMaintenance droneMaintenance : listDroneMaintenance) {
             DroneStateDto droneStateDto = new DroneStateDto(droneMaintenance.getId(), droneMaintenance.getName(), true);
+            droneStateDto.setTimeStart(droneMaintenance.getTimeStart());
+            droneStateDto.setTimeEnd(droneMaintenance.getTimeEnd());
             if (droneMaintenance.isMaintenance()) {
                 droneStateDto.setMessage(2);
                 droneStateDto.setState(2);
@@ -204,26 +204,16 @@ public class DroneStateService {
         Optional<FlightPath> flightPath = flightPathService.getById(flightItinerary.getLinkDronePaths().get(0).getListIdFlightPath().get(0));
 
         List<String> listSupervisedObject = new ArrayList<>();
-        List<FlightPoint> listFlightPoint = flightPath.get().getFlightPoints();
         if (!flightPath.isPresent()) {
             listSupervisedObject.add("000");
         } else {
-            for (FlightPoint flightPoint : listFlightPoint) {
+            for (FlightPoint flightPoint : flightPath.get().getFlightPoints()) {
                 listSupervisedObject.add(flightPoint.getIdSupervisedObject());
             }
         }
 
-        if (listFlightPoint.size() == 1) {
-            locationLat = listFlightPoint.get(0).getLocationLat();
-            locationLng = listFlightPoint.get(0).getLocationLng();
-        } else if (listFlightPoint.size() > 1) {
-            locationLat = (listFlightPoint.get(0).getLocationLat() + listFlightPoint.get(1).getLocationLat())/2;
-            locationLng = (listFlightPoint.get(0).getLocationLng() + listFlightPoint.get(1).getLocationLng())/2;
-        }
-
         ParamFlightResponse paramFlightResponse = new ParamFlightResponse(locationLat, locationLng, idDrone, flightItinerary.getId(), flightItinerary.getIdSupervisedArea(),
                 listSupervisedObject, flightItinerary.getIdCampaign(), 20.f, new Date(), 30.f, percentBattery);
-        paramFlightResponse.setFlightPath(flightPath.get());
         return new ServerResponseDto(ResponseCase.SUCCESS, paramFlightResponse);
     }
 

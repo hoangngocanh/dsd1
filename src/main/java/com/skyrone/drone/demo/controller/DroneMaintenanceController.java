@@ -30,4 +30,10 @@ public class DroneMaintenanceController {
         return ResponseEntity.ok().body(droneMaintenanceService.save(droneMaintenance));
     }
 
+    @ApiOperation("Chuyển trạng thái sẵn sàng cho drone")
+    @GetMapping("/getBackDrone/{id}")
+    public ResponseEntity<ServerResponseDto> getBackDrone(@PathVariable("id")String id) {
+        return ResponseEntity.ok().body(droneMaintenanceService.getBackDrone(id));
+    }
+
 }
