@@ -1,5 +1,6 @@
 package com.skyrone.drone.demo.dto;
 
+import com.skyrone.drone.demo.model.FlightPath;
 import lombok.Getter;
 import lombok.Setter;
 
@@ -20,6 +21,7 @@ public class ParamFlightResponse {
     private Date time;
     private Float speed;
     private Float percentBattery;
+    private FlightPath flightPath;
 
     public ParamFlightResponse() {
     }

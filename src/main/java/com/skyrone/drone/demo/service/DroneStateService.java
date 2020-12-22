@@ -13,6 +13,8 @@ import org.springframework.stereotype.Service;
 
 import java.util.*;
 
+import static java.lang.StrictMath.abs;
+
 @Service
 public class DroneStateService {
     @Autowired
@@ -176,6 +178,7 @@ public class DroneStateService {
         Optional<Drone> drone = droneRepository.findById(id);
         if (drone.isPresent()) {
             drone.get().setUsed(false);
+            droneService.save(drone.get());
             return new ServerResponseDto(ResponseCase.SUCCESS);
         }
         return new ServerResponseDto(ResponseCase.NOT_FOUND_DRONE);
@@ -201,16 +204,26 @@ public class DroneStateService {
         Optional<FlightPath> flightPath = flightPathService.getById(flightItinerary.getLinkDronePaths().get(0).getListIdFlightPath().get(0));
 
         List<String> listSupervisedObject = new ArrayList<>();
+        List<FlightPoint> listFlightPoint = flightPath.get().getFlightPoints();
         if (!flightPath.isPresent()) {
             listSupervisedObject.add("000");
         } else {
-            for (FlightPoint flightPoint : flightPath.get().getFlightPoints()) {
+            for (FlightPoint flightPoint : listFlightPoint) {
                 listSupervisedObject.add(flightPoint.getIdSupervisedObject());
             }
         }
 
+        if (listFlightPoint.size() == 1) {
+            locationLat = listFlightPoint.get(0).getLocationLat();
+            locationLng = listFlightPoint.get(0).getLocationLng();
+        } else if (listFlightPoint.size() > 1) {
+            locationLat = (listFlightPoint.get(0).getLocationLat() + listFlightPoint.get(1).getLocationLat())/2;
+            locationLng = (listFlightPoint.get(0).getLocationLng() + listFlightPoint.get(1).getLocationLng())/2;
+        }
+
         ParamFlightResponse paramFlightResponse = new ParamFlightResponse(locationLat, locationLng, idDrone, flightItinerary.getId(), flightItinerary.getIdSupervisedArea(),
                 listSupervisedObject, flightItinerary.getIdCampaign(), 20.f, new Date(), 30.f, percentBattery);
+        paramFlightResponse.setFlightPath(flightPath.get());
         return new ServerResponseDto(ResponseCase.SUCCESS, paramFlightResponse);
     }
 

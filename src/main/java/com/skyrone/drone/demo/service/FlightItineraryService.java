@@ -33,12 +33,10 @@ public class FlightItineraryService {
     public ServerResponseDto save(FlightItinerary flightItinerary) {
         for (LinkDronePath idDrones : flightItinerary.getLinkDronePaths()) {
             String idDrone = idDrones.getIdDrone();
-            DroneStateDto droneStateDto = droneStateService.getById(idDrone);
-            if (droneStateDto == null) {
+            Optional<Drone> drone = droneRepository.findById(idDrone);
+
+            if (!drone.isPresent()) {
                 return new ServerResponseDto(ResponseCase.NOT_FOUND_DRONE, idDrone);
-            }
-            if (droneStateDto.getState() != 0) {
-                return new ServerResponseDto(ResponseCase.DRONE_BUSY, idDrone);
             }
         }
         return new ServerResponseDto(ResponseCase.SUCCESS, flightItineraryRepository.save(flightItinerary));

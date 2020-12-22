@@ -8,7 +8,7 @@ import java.util.Date;
 import java.util.List;
 
 public interface FlightItineraryRepository extends MongoRepository<FlightItinerary, String> {
-    @Query("{$and : [{ 'timeStart': {$gte : ?0}}, {'timeEnd' : {$lte : ?1}}]}")
+    @Query("{$and : [{ 'timeEnd': {$gte : ?0}}, {'timeStart' : {$lte : ?1}}]}")
     List<FlightItinerary> getAllPathActive(Date timeStart, Date timeEnd);
 
     @Query("{ 'timeStart': {$gte : ?0}}")
@@ -17,7 +17,7 @@ public interface FlightItineraryRepository extends MongoRepository<FlightItinera
     @Query("{'timeEnd' : {$lte : ?1}}")
     List<FlightItinerary> getAllPathActiveTo(Date timeEnd);
 
-    @Query("{$and : [{ 'timeStart': {$gte : ?0}}, {'timeEnd' : {$lte : ?1}}, {'linkDronePaths' : { $elemMatch : {'idDrone' : {'$all' : [?1]}}}}]}")
+    @Query("{$and : [{ 'timeEnd': {$gte : ?0}}, {'timeStart' : {$lte : ?1}}, {'linkDronePaths' : { $elemMatch : {'idDrone' : {'$all' : [?2]}}}}]}")
     List<FlightItinerary> getPathByIdDroneDate(Date timeStart, Date timeEnd, String idDrone);
 
     @Query("{$and : [{ 'timeStart': {$gte : ?0}}, {'linkDronePaths' : { $elemMatch : {'idDrone' : {'$all' : [?1]}}}}]}")
@@ -29,7 +29,7 @@ public interface FlightItineraryRepository extends MongoRepository<FlightItinera
     @Query("{$and : [{'timeEnd' : {$gte : ?0}}, {'timeStart' : {$lte : ?0}}, {'linkDronePaths' : { $elemMatch : {'idDrone' : {'$all' : [?1]}}}}]}")
     List<FlightItinerary> getByIdDroneRealTime(Date realTime, String idDrone);
 
-    @Query("{'idDroneList' : {'$all' : [?0]}}")
+    @Query("{'linkDronePaths' : { $elemMatch : {'idDrone' : {'$all' : [?0]}}}}")
     List<FlightItinerary> findByIdDrone(String id);
 
     List<FlightItinerary> findByIdSupervisedArea(String id);
