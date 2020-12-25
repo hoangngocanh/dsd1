@@ -1,6 +1,7 @@
 package com.skyrone.drone.demo.service;
 
 import com.skyrone.drone.demo.model.Drone;
+import com.skyrone.drone.demo.model.DroneMaintenance;
 import com.skyrone.drone.demo.repository.DroneRepository;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
@@ -11,6 +12,9 @@ import java.util.*;
 public class DroneService {
     @Autowired
     DroneRepository droneRepository;
+
+    @Autowired
+    DroneMaintenanceService droneMaintenanceService;
 
 
 
@@ -39,6 +43,7 @@ public class DroneService {
 
     public void delete(String id) {
         droneRepository.deleteById(id);
+        droneMaintenanceService.delete(id);
     }
 
 }

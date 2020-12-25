@@ -1,9 +1,11 @@
 package com.skyrone.drone.demo.controller;
 
 import com.skyrone.drone.demo.dto.DroneStateDto;
+import com.skyrone.drone.demo.dto.FormStateAll;
 import com.skyrone.drone.demo.dto.ResponseCase;
 import com.skyrone.drone.demo.dto.ServerResponseDto;
 import com.skyrone.drone.demo.model.Drone;
+import com.skyrone.drone.demo.model.DroneMaintenance;
 import com.skyrone.drone.demo.service.DroneStateService;
 import io.swagger.annotations.ApiOperation;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -71,6 +73,12 @@ public class DroneStateController {
         return ResponseEntity.ok().body(droneStateService.setDroneBroken(id));
     }
 
+    @ApiOperation("Đánh giấu nhiều drone bị hỏng")
+    @PostMapping("/setBrokenAll")
+    public ResponseEntity<ServerResponseDto> setBrokenAll(@RequestBody FormStateAll formStateAll) {
+        return ResponseEntity.ok().body(droneStateService.setBrokenAll(formStateAll.getListId()));
+    }
+
     @ApiOperation("Lấy danh sách drone bị hỏng")
     @GetMapping("/getAllDroneBroken")
     public ResponseEntity<ServerResponseDto> getAllDroneBroken() {
@@ -112,7 +120,6 @@ public class DroneStateController {
         return ResponseEntity.ok().body(new ServerResponseDto(ResponseCase.DRONE_MAINTENANCE,
                 droneStateDtoList));
     }
-
 
 
 }

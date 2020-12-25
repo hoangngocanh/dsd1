@@ -112,7 +112,7 @@ public class DroneStateService {
             DroneStateDto droneStateDto = new DroneStateDto(droneMaintenance.getId(), droneMaintenance.getName(), true);
             droneStateDto.setTimeStart(droneMaintenance.getTimeStart());
             droneStateDto.setTimeEnd(droneMaintenance.getTimeEnd());
-            if (droneMaintenance.isMaintenance()) {
+            if (!droneMaintenance.isMaintenance()) {
                 droneStateDto.setMessage(2);
                 droneStateDto.setState(2);
             } else {
@@ -177,6 +177,7 @@ public class DroneStateService {
     public ServerResponseDto setDroneBroken(String id) {
         Optional<Drone> drone = droneRepository.findById(id);
         if (drone.isPresent()) {
+            droneMaintenanceService.getBackDrone(id);
             drone.get().setUsed(false);
             droneService.save(drone.get());
             return new ServerResponseDto(ResponseCase.SUCCESS);
@@ -346,4 +347,10 @@ public class DroneStateService {
     }
 
 
+    public ServerResponseDto setBrokenAll(List<String> listId) {
+        for (String id : listId) {
+            setDroneBroken(id);
+        }
+        return   new ServerResponseDto(ResponseCase.SUCCESS);
+    }
 }

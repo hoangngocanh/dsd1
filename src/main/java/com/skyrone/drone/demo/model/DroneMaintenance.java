@@ -33,6 +33,13 @@ public class DroneMaintenance {
         this.isMaintenance = isMaintenance;
     }
 
+    public DroneMaintenance(String id,Date timeStart, Date timeEnd, boolean isMaintenance) {
+        this.id = id;
+        this.timeStart = timeStart;
+        this.timeEnd = timeEnd;
+        this.isMaintenance = isMaintenance;
+    }
+
     public DroneMaintenance() {
     }
 }
