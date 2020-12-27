@@ -20,4 +20,5 @@ public interface ResponseCase {
     ResponseStatus NOT_DATA = new ResponseStatus(4006, "không tìm thấy");
     ResponseStatus DRONE_CHARGING = new ResponseStatus(4007, "drone charging");
     ResponseStatus DRONE_BROKEN = new ResponseStatus(4008, "drone broken");
+    ResponseStatus NOT_FOUND_PATH =  new ResponseStatus(4009, "not found path");;
 }

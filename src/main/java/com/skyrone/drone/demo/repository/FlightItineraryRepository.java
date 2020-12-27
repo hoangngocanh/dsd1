@@ -14,7 +14,7 @@ public interface FlightItineraryRepository extends MongoRepository<FlightItinera
     @Query("{ 'timeStart': {$gte : ?0}}")
     List<FlightItinerary> getAllPathActiveFrom(Date timeStart);
 
-    @Query("{'timeEnd' : {$lte : ?1}}")
+    @Query("{'timeEnd' : {$lte : ?0}}")
     List<FlightItinerary> getAllPathActiveTo(Date timeEnd);
 
     @Query("{$and : [{ 'timeEnd': {$gte : ?0}}, {'timeStart' : {$lte : ?1}}, {'linkDronePaths' : { $elemMatch : {'idDrone' : {'$all' : [?2]}}}}]}")

@@ -5,6 +5,7 @@ import com.skyrone.drone.demo.dto.ResponseCase;
 import com.skyrone.drone.demo.dto.ServerResponseDto;
 import com.skyrone.drone.demo.model.Drone;
 import com.skyrone.drone.demo.model.FlightItinerary;
+import com.skyrone.drone.demo.model.FlightPath;
 import com.skyrone.drone.demo.model.LinkDronePath;
 import com.skyrone.drone.demo.repository.DroneRepository;
 import com.skyrone.drone.demo.repository.FlightItineraryRepository;
@@ -28,15 +29,29 @@ public class FlightItineraryService {
     @Autowired
     DroneStateService droneStateService;
 
+    @Autowired
+    FlightPathService flightPathService;
+
 
 
     public ServerResponseDto save(FlightItinerary flightItinerary) {
-        for (LinkDronePath idDrones : flightItinerary.getLinkDronePaths()) {
-            String idDrone = idDrones.getIdDrone();
+        for (LinkDronePath linkDronePath : flightItinerary.getLinkDronePaths()) {
+            String idDrone = linkDronePath.getIdDrone();
             Optional<Drone> drone = droneRepository.findById(idDrone);
 
             if (!drone.isPresent()) {
                 return new ServerResponseDto(ResponseCase.NOT_FOUND_DRONE, idDrone);
+            }
+
+            if (linkDronePath.getListIdFlightPath() == null) {
+                return new ServerResponseDto(ResponseCase.NOT_FOUND_PATH, "null");
+            } else {
+                for (String idPath : linkDronePath.getListIdFlightPath()) {
+                    Optional<FlightPath> flightPath = flightPathService.getById(idPath);
+                    if (!flightPath.isPresent()) {
+                        return new ServerResponseDto(ResponseCase.NOT_FOUND_PATH, "idPath = "+ idPath);
+                    }
+                }
             }
         }
         return new ServerResponseDto(ResponseCase.SUCCESS, flightItineraryRepository.save(flightItinerary));

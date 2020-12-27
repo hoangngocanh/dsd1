@@ -192,7 +192,7 @@ public class DroneStateService {
     public ServerResponseDto getParameterFlightRealTime(String idDrone) {
         Optional<Drone> drone = droneRepository.findById(idDrone);
         if (!drone.isPresent()) return new ServerResponseDto(ResponseCase.NOT_FOUND_DRONE);
-        if (!drone.get().isUsed()) return new ServerResponseDto(ResponseCase.DRONE_MAINTENANCE);
+        if (!drone.get().isUsed()) return new ServerResponseDto(ResponseCase.DRONE_BROKEN);
         FlightItinerary flightItinerary = flightItineraryService.getFlightPathRealTime(idDrone);
         if (flightItinerary == null) {
             return new ServerResponseDto(ResponseCase.DRONE_NOT_FLIGHT);
@@ -202,19 +202,28 @@ public class DroneStateService {
         Date realTime = new Date();
         float percentBattery = ((float ) (flightItinerary.getTimeEnd().getTime() - realTime.getTime()))
                 /((float) (flightItinerary.getTimeEnd().getTime() - flightItinerary.getTimeStart().getTime())) * 100f;
-        Optional<FlightPath> flightPath = flightPathService.getById(flightItinerary.getLinkDronePaths().get(0).getListIdFlightPath().get(0));
-
+        String idPath = "0";
+        for (LinkDronePath linkDronePath : flightItinerary.getLinkDronePaths()) {
+            if (linkDronePath.getIdDrone().equals(idDrone)) {
+                if (linkDronePath.getListIdFlightPath().size() > 0) {
+                    idPath = linkDronePath.getListIdFlightPath().get(0);
+                }
+            }
+        }
+        Optional<FlightPath> flightPath = flightPathService.getById(idPath);
+        FlightPath flightPath1 = null;
         List<String> listSupervisedObject = new ArrayList<>();
         if (!flightPath.isPresent()) {
             listSupervisedObject.add("000");
         } else {
+            flightPath1 = flightPath.get();
             for (FlightPoint flightPoint : flightPath.get().getFlightPoints()) {
                 listSupervisedObject.add(flightPoint.getIdSupervisedObject());
             }
         }
 
         ParamFlightResponse paramFlightResponse = new ParamFlightResponse(locationLat, locationLng, idDrone, flightItinerary.getId(), flightItinerary.getIdSupervisedArea(),
-                listSupervisedObject, flightItinerary.getIdCampaign(), 20.f, new Date(), 30.f, percentBattery);
+                listSupervisedObject, flightItinerary.getIdCampaign(), 20.f, new Date(), 30.f, percentBattery, flightPath1);
         return new ServerResponseDto(ResponseCase.SUCCESS, paramFlightResponse);
     }
 

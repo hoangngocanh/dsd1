@@ -21,6 +21,7 @@ public class FlightPoint {
     private String note;
     private String idSupervisedObject;
     private Float flightHeight;
+    private Float flightHeightDown;
 
     public FlightPoint() {
     }

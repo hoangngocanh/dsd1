@@ -27,7 +27,7 @@ public class ParamFlightResponse {
     }
 
     public ParamFlightResponse(Float locationLat, Float locationLng, String idDrone, String idFlightPath, String idSupervisedArea,
-                               List<String> idSupervisedObject, String idCampaign, Float heightFlight, Date time, Float speed,Float percentBattery) {
+                               List<String> idSupervisedObject, String idCampaign, Float heightFlight, Date time, Float speed,Float percentBattery, FlightPath flightPath) {
         this.locationLat = locationLat;
         this.locationLng = locationLng;
         this.idDrone = idDrone;
@@ -39,5 +39,6 @@ public class ParamFlightResponse {
         this.speed = speed;
         this.idSupervisedArea = idSupervisedArea;
         this.percentBattery = percentBattery;
+        this.flightPath = flightPath;
     }
 }
