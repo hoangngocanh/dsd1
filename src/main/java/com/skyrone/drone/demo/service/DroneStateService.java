@@ -214,12 +214,13 @@ public class DroneStateService {
         FlightPath flightPath1 = null;
         List<String> listSupervisedObject = new ArrayList<>();
         if (!flightPath.isPresent()) {
-            listSupervisedObject.add("000");
+            flightPath1 = flightPathService.getAll().get(0);
         } else {
             flightPath1 = flightPath.get();
-            for (FlightPoint flightPoint : flightPath.get().getFlightPoints()) {
-                listSupervisedObject.add(flightPoint.getIdSupervisedObject());
-            }
+        }
+
+        for (FlightPoint flightPoint : flightPath1.getFlightPoints()) {
+            listSupervisedObject.add(flightPoint.getIdSupervisedObject());
         }
 
         ParamFlightResponse paramFlightResponse = new ParamFlightResponse(locationLat, locationLng, idDrone, flightItinerary.getId(), flightItinerary.getIdSupervisedArea(),

@@ -18,6 +18,7 @@ public class FlightPath {
     private String idSupervisedArea;
     private Float averageHeight;
     private Float distance;
+    private boolean isDelete = false;
 
     private List<FlightPoint> flightPoints;
 
