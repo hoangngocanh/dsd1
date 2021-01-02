@@ -1,5 +1,6 @@
 package com.skyrone.drone.demo.service;
 
+import com.google.common.collect.Lists;
 import com.skyrone.drone.demo.model.Drone;
 import com.skyrone.drone.demo.model.DroneMaintenance;
 import com.skyrone.drone.demo.repository.DroneRepository;
@@ -24,7 +25,20 @@ public class DroneService {
 
 
     public List<Drone> findAll() {
-        return droneRepository.findAll();
+//        List<Drone> list = droneRepository.findAll();
+//        int dem = 0;
+//        Random generator = new Random();
+//        for (Drone drone : list) {
+//            dem ++;
+//            drone.setType(generator.nextInt(6) +1);
+//            if (drone.getName() == null) {
+//                drone.setName("Xman2021"+generator.nextInt(100));
+//            } else if (drone.getName().length() < 1) {
+//                drone.setName("Xman2021"+generator.nextInt(100));
+//            }
+//            save(drone);
+//        }
+        return Lists.reverse(droneRepository.findAll());
     }
 
 

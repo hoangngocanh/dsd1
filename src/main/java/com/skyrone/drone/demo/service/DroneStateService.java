@@ -115,6 +115,7 @@ public class DroneStateService {
             if (!droneMaintenance.isMaintenance()) {
                 droneStateDto.setMessage(2);
                 droneStateDto.setState(2);
+                droneStateDto.setPercentBattery(100f - getPercent(droneMaintenance.getTimeStart(), droneMaintenance.getTimeEnd()));
             } else {
                 droneStateDto.setMessage(3);
                 droneStateDto.setState(3);
@@ -243,6 +244,7 @@ public class DroneStateService {
                     droneStateDto.setMessage(2);
                     droneStateDto.setTimeEnd(droneMaintenance.getTimeEnd());
                     droneStateDto.setTimeStart(droneMaintenance.getTimeStart());
+                    droneStateDto.setPercentBattery(100f - getPercent(droneMaintenance.getTimeStart(), droneMaintenance.getTimeEnd()));
                     droneList.add(droneStateDto);
                 }
             }
@@ -362,5 +364,11 @@ public class DroneStateService {
             setDroneBroken(id);
         }
         return   new ServerResponseDto(ResponseCase.SUCCESS);
+    }
+
+    private float getPercent(Date startTime, Date endTime) {
+        Date realTime = new Date();
+        return  ((float ) (endTime.getTime() - realTime.getTime()))
+                /((float) (endTime.getTime() - startTime.getTime())) * 100f;
     }
 }

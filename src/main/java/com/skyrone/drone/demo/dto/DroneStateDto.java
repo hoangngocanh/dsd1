@@ -18,6 +18,7 @@ public class DroneStateDto {
     private int project = 0;
     private String contentProject = "Chưa được phân công";
     private String nameTask;
+    private float percentBattery;
 
     public DroneStateDto() {
     }
