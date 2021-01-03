@@ -32,10 +32,17 @@ public interface FlightItineraryRepository extends MongoRepository<FlightItinera
     @Query("{'linkDronePaths' : { $elemMatch : {'idDrone' : {'$all' : [?0]}}}}")
     List<FlightItinerary> findByIdDrone(String id);
 
+    @Query("{$and : [{'linkDronePaths' : { $elemMatch : {'idDrone' : {'$all' : [?0]}}}}, {'idCampaign' : '?1'}]}")
+    List<FlightItinerary> findByIdDroneAndCampaign(String idDrone, String idCampaign);
+
     List<FlightItinerary> findByIdSupervisedArea(String id);
 
     Long deleteByIdCampaign(String id);
 
+
+
     @Query("{$and : [{'timeEnd' : {$gte : ?0}}, {'timeStart' : {$lte : ?0}}]}")
     List<FlightItinerary> getAllPathActiveRealTime(Date date);
+
+    List<FlightItinerary> findByIdCampaign(String id);
 }

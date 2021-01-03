@@ -97,7 +97,7 @@ public class FlightItineraryService {
     }
 
 
-    public FlightItinerary getFlightPathRealTime(String idDrone) {
+    public FlightItinerary getFlightItineraryRealTime(String idDrone) {
         List<FlightItinerary> flightItineraryList =  flightItineraryRepository.getByIdDroneRealTime(new Date(), idDrone);
         if (flightItineraryList.size() < 1) {
             return null;
@@ -115,5 +115,21 @@ public class FlightItineraryService {
 
     public void deleteByCampaign(String id) {
         flightItineraryRepository.deleteByIdCampaign(id);
+    }
+
+    public FlightItinerary getFlightItineraryByIdDroneAndCampaign(String idDrone, String idCampaign) {
+        List<FlightItinerary> list =  flightItineraryRepository.findByIdDroneAndCampaign(idDrone, idCampaign);
+        if (list.size() > 0) {
+            return list.get(0);
+        }
+        return  null;
+    }
+
+    public FlightItinerary getByCampaign(String id) {
+        List<FlightItinerary> list =  flightItineraryRepository.findByIdCampaign(id);
+        if (list.size() > 0) {
+            return list.get(0);
+        }
+        return  null;
     }
 }

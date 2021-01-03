@@ -109,6 +109,11 @@ public class DroneStateController {
         return ResponseEntity.ok().body(droneStateService.getParameterFlightRealTime(id));
     }
 
+    @GetMapping("/getParameterFlightOffline")
+    public ResponseEntity<ServerResponseDto> getParameterFlightOffline(@RequestParam(value = "idDrone", required = true) String idDrone,
+                                                                       @RequestParam(value = "idCampaign", required = false) String idCampaign) {
+        return ResponseEntity.ok().body(droneStateService.getParameterFlightOffline(idDrone, idCampaign));
+    }
     @ApiOperation(value = "Lấy danh sách drone đang bảo trì trong khoảng thời gian", response = List.class)
     @GetMapping("/getAllDroneMaintenance")
     public ResponseEntity<ServerResponseDto> getAllDroneMaintenance(@RequestParam(value = "timeStart", required = false) @DateTimeFormat(pattern = "yyyy-MM-dd HH:mm:ss") Date timeStart,

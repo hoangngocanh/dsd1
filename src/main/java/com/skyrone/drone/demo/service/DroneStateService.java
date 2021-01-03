@@ -62,7 +62,7 @@ public class DroneStateService {
                     droneStateDto.setMessage(2);
                 }
             } else {
-                FlightItinerary flightItinerary = flightItineraryService.getFlightPathRealTime(id);
+                FlightItinerary flightItinerary = flightItineraryService.getFlightItineraryRealTime(id);
                 if (flightItinerary != null) {
                     droneStateDto.setState(1);
                     droneStateDto.setMessage(1);
@@ -194,7 +194,7 @@ public class DroneStateService {
         Optional<Drone> drone = droneRepository.findById(idDrone);
         if (!drone.isPresent()) return new ServerResponseDto(ResponseCase.NOT_FOUND_DRONE);
         if (!drone.get().isUsed()) return new ServerResponseDto(ResponseCase.DRONE_BROKEN);
-        FlightItinerary flightItinerary = flightItineraryService.getFlightPathRealTime(idDrone);
+        FlightItinerary flightItinerary = flightItineraryService.getFlightItineraryRealTime(idDrone);
         if (flightItinerary == null) {
             return new ServerResponseDto(ResponseCase.DRONE_NOT_FLIGHT);
         }
@@ -226,6 +226,44 @@ public class DroneStateService {
 
         ParamFlightResponse paramFlightResponse = new ParamFlightResponse(locationLat, locationLng, idDrone, flightItinerary.getId(), flightItinerary.getIdSupervisedArea(),
                 listSupervisedObject, flightItinerary.getIdCampaign(), 20.f, new Date(), 30.f, percentBattery, flightPath1);
+        return new ServerResponseDto(ResponseCase.SUCCESS, paramFlightResponse);
+    }
+
+    public ServerResponseDto getParameterFlightOffline(String idDrone, String idCampaign) {
+        Optional<Drone> drone = droneRepository.findById(idDrone);
+        if (!drone.isPresent()) return new ServerResponseDto(ResponseCase.NOT_FOUND_DRONE);
+        if (!drone.get().isUsed()) return new ServerResponseDto(ResponseCase.DRONE_BROKEN);
+        FlightItinerary flightItinerary = flightItineraryService.getFlightItineraryByIdDroneAndCampaign(idDrone, idCampaign);
+        if (flightItinerary == null) {
+            return new ServerResponseDto(ResponseCase.DRONE_NOT_FLIGHT);
+        }
+        float locationLat = 0;
+        float locationLng = 0;
+        Date realTime = new Date();
+        float percentBattery = 0;
+        String idPath = "0";
+        for (LinkDronePath linkDronePath : flightItinerary.getLinkDronePaths()) {
+            if (linkDronePath.getIdDrone().equals(idDrone)) {
+                if (linkDronePath.getListIdFlightPath().size() > 0) {
+                    idPath = linkDronePath.getListIdFlightPath().get(0);
+                }
+            }
+        }
+        Optional<FlightPath> flightPath = flightPathService.getById(idPath);
+        FlightPath flightPath1 = null;
+        List<String> listSupervisedObject = new ArrayList<>();
+        if (!flightPath.isPresent()) {
+            flightPath1 = flightPathService.getAll().get(0);
+        } else {
+            flightPath1 = flightPath.get();
+        }
+
+        for (FlightPoint flightPoint : flightPath1.getFlightPoints()) {
+            listSupervisedObject.add(flightPoint.getIdSupervisedObject());
+        }
+
+        ParamFlightResponse paramFlightResponse = new ParamFlightResponse(locationLat, locationLng, idDrone, flightItinerary.getId(), flightItinerary.getIdSupervisedArea(),
+                listSupervisedObject, flightItinerary.getIdCampaign(), 0f, new Date(), 30.f, 0f, flightPath1);
         return new ServerResponseDto(ResponseCase.SUCCESS, paramFlightResponse);
     }
 
