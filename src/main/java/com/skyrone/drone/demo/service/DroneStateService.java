@@ -235,7 +235,7 @@ public class DroneStateService {
         if (!drone.get().isUsed()) return new ServerResponseDto(ResponseCase.DRONE_BROKEN);
         FlightItinerary flightItinerary = flightItineraryService.getFlightItineraryByIdDroneAndCampaign(idDrone, idCampaign);
         if (flightItinerary == null) {
-            return new ServerResponseDto(ResponseCase.DRONE_NOT_FLIGHT);
+            return new ServerResponseDto(ResponseCase.NOT_DATA);
         }
         float locationLat = 0;
         float locationLng = 0;

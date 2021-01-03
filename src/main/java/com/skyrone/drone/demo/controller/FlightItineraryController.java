@@ -7,10 +7,12 @@ import com.skyrone.drone.demo.service.FlightItineraryService;
 import io.swagger.annotations.ApiOperation;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.format.annotation.DateTimeFormat;
+import org.springframework.http.RequestEntity;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
 
 import java.util.Date;
+import java.util.List;
 
 @RestController
 @CrossOrigin(origins = "*", allowedHeaders = "*")
@@ -56,6 +58,16 @@ public class FlightItineraryController {
             return ResponseEntity.ok().body(new ServerResponseDto(ResponseCase.NOT_DATA));
         }
         return ResponseEntity.ok().body(new ServerResponseDto(ResponseCase.SUCCESS, flightItinerary));
+    }
+
+    @GetMapping("/getByIdDrone/{id}")
+    @ApiOperation(value = "Lay hanh trinh bay theo id drone")
+    public ResponseEntity getByIdDrone(@PathVariable String id) {
+        List<FlightItinerary> list = flightItineraryService.getByIdDrone(id);
+        if (list.size() < 1) {
+            return ResponseEntity.ok().body(new ServerResponseDto(ResponseCase.NOT_DATA));
+        }
+        return ResponseEntity.ok().body(new ServerResponseDto(ResponseCase.SUCCESS, flightItineraryService.getByIdDrone(id)));
     }
 
 

@@ -132,4 +132,8 @@ public class FlightItineraryService {
         }
         return  null;
     }
+
+    public List<FlightItinerary> getByIdDrone(String id) {
+        return flightItineraryRepository.findByIdDrone(id);
+    }
 }
