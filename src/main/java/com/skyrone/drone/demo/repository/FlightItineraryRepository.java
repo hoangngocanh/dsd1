@@ -34,6 +34,8 @@ public interface FlightItineraryRepository extends MongoRepository<FlightItinera
 
     List<FlightItinerary> findByIdSupervisedArea(String id);
 
+    Long deleteByIdCampaign(String id);
+
     @Query("{$and : [{'timeEnd' : {$gte : ?0}}, {'timeStart' : {$lte : ?0}}]}")
     List<FlightItinerary> getAllPathActiveRealTime(Date date);
 }

@@ -112,4 +112,8 @@ public class FlightItineraryService {
     public List<FlightItinerary> getAllRealTime() {
         return flightItineraryRepository.getAllPathActiveRealTime(new Date());
     }
+
+    public void deleteByCampaign(String id) {
+        flightItineraryRepository.deleteByIdCampaign(id);
+    }
 }

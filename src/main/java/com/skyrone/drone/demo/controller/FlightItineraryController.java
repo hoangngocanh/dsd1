@@ -41,4 +41,11 @@ public class FlightItineraryController {
         return ResponseEntity.ok().body(new ServerResponseDto(ResponseCase.SUCCESS));
     }
 
+    @GetMapping("/delteByCampain/{id}")
+    @ApiOperation(value = "Xoa hanh trinh bay theo dot giam sat")
+    public ResponseEntity deleteByCampaign(@PathVariable String id) {
+        flightItineraryService.deleteByCampaign(id);
+        return ResponseEntity.ok().body(new ServerResponseDto(ResponseCase.SUCCESS));
+    }
+
 }
